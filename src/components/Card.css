@@ -1,0 +1,11 @@
+.btn-circle {
+  width: 50px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.42857;
+  background-color: lightgreen;
+}
+.card-container {
+  margin-bottom: 10px;
+}

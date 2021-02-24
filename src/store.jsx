@@ -23,8 +23,8 @@ const UPDATE_PROFILE = 'UPDATE_PROFILE';
 // define the matching reducer function
 export function appReducer(state, action) {
   switch (action.type) {
-    // case ADD_CART:
-    //   return { ...state, cart: [...state.cart, action.payload.item] };
+    case RETRIEVE_ACTIVITY:
+      return { ...state, activities: action.payload.activities };
     // case REMOVE_CART:
     //   const cart = state.filter((_item, i) => action.payload.cartIttemIndex !== i);
     //   return { ...state, cart };
@@ -38,11 +38,19 @@ export function appReducer(state, action) {
 // and return an object that represents that action, which is typically
 // passed to the dispatch function. Actions always contain a type attribute
 // used to identify the action and tell the reducer what logic to run.
-export function addCartAction(item) {
+// export function addCartAction(item) {
+//   return {
+//     type: ADD_CART,
+//     payload: {
+//       item,
+//     },
+//   };
+// }
+export function retrieveActivityAction(activities) {
   return {
-    type: ADD_CART,
+    type: RETRIEVE_ACTIVITY,
     payload: {
-      item,
+      activities,
     },
   };
 }
@@ -93,8 +101,8 @@ export function AppProvider({ children }) {
 
 const BACKEND_URL = 'http://localhost:3004';
 
-// export function loadItems(dispatch) {
-//   axios.get(`${BACKEND_URL}/items`).then((result) => {
-//     dispatch(loadItemsAction(result.data.items));
-//   });
-// }
+export function retrieveActivities(dispatch) {
+  axios.get(`${BACKEND_URL}/activities`).then((result) => {
+    dispatch(retrieveActivityAction(result.data.activities));
+  });
+}

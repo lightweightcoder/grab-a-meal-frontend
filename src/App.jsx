@@ -6,23 +6,23 @@ import {
   Route,
 } from 'react-router-dom';
 import NavbarComponent from './components/NavBar.jsx';
+import HomeComponent from './components/Home.jsx';
+import { AppProvider } from './store.jsx';
 
 function App() {
   return (
     <>
-      <Router>
-        <NavbarComponent />
-        <Switch>
-          <Route path="/home" component="" />
-          <Route path="/profile" component="" />
-          <Route path="/messages" component="" />
-          <Route path="/logout" component="" />
-        </Switch>
-        <div className="container">
-          <p> hello world</p>
-        </div>
-      </Router>
-
+      <AppProvider>
+        <Router>
+          <NavbarComponent />
+          <Switch>
+            <Route path="/home" component={HomeComponent} />
+            <Route path="/profile" component="" />
+            <Route path="/messages" component="" />
+            <Route path="/logout" component="" />
+          </Switch>
+        </Router>
+      </AppProvider>
     </>
   );
 }
