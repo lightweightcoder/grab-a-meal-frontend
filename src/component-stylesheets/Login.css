@@ -1,0 +1,12 @@
+.login-form {
+  border: 1px solid #dee2e6;
+  padding: 4px 20px 12px 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-invalid-message {
+  color: red;
+}

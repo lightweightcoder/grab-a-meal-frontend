@@ -1,0 +1,19 @@
+.registration-form-container {
+  display: flex;
+  justify-content: center;
+}
+
+.registration-form {
+  border: 1px solid #dee2e6;
+  margin-top: 24px;
+  padding: 12px 20px;
+  max-width: 500px;
+}
+
+.registration-form-headings {
+  text-align: center;
+}
+
+.registration-invalid-message {
+  color: red;
+}

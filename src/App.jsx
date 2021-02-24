@@ -6,6 +6,8 @@ import {
   Route,
 } from 'react-router-dom';
 import NavbarComponent from './components/NavBar.jsx';
+import LoginComponent from './components/Login.jsx';
+import RegistrationComponent from './components/Registration.jsx';
 import HomeComponent from './components/Home.jsx';
 import { AppProvider } from './store.jsx';
 
@@ -20,6 +22,8 @@ function App() {
             <Route path="/profile" component="" />
             <Route path="/messages" component="" />
             <Route path="/logout" component="" />
+            <Route path="/login" component={LoginComponent} />
+            <Route path="/register" component={RegistrationComponent} />
           </Switch>
         </Router>
       </AppProvider>

@@ -99,7 +99,7 @@ export function AppProvider({ children }) {
 //
 // these functions must be passed the dispatch from the current context
 
-const BACKEND_URL = 'http://localhost:3004';
+export const BACKEND_URL = 'http://localhost:3004';
 
 export function retrieveActivities(dispatch) {
   axios.get(`${BACKEND_URL}/activities`).then((result) => {

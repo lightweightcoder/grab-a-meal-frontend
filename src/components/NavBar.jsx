@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 
 export default function NavbarComponent() {
   return (
-    <>
+    <div className="navbar-container">
       <Navbar bg="light" expand="lg">
         <LinkContainer to="/home">
           <Navbar.Brand>
@@ -30,6 +30,6 @@ export default function NavbarComponent() {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-    </>
+    </div>
   );
 }
