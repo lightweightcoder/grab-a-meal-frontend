@@ -25,6 +25,8 @@ export function appReducer(state, action) {
   switch (action.type) {
     case RETRIEVE_ACTIVITY:
       return { ...state, activities: action.payload.activities };
+    case CREATE_ACTIVITY:
+      return { ...state, activities: [...state.activities, action.payload.activity] };
     // case REMOVE_CART:
     //   const cart = state.filter((_item, i) => action.payload.cartIttemIndex !== i);
     //   return { ...state, cart };
@@ -51,6 +53,14 @@ export function retrieveActivityAction(activities) {
     type: RETRIEVE_ACTIVITY,
     payload: {
       activities,
+    },
+  };
+}
+export function createActivityAction(activity) {
+  return {
+    type: CREATE_ACTIVITY,
+    payload: {
+      activity,
     },
   };
 }
@@ -104,5 +114,13 @@ const BACKEND_URL = 'http://localhost:3004';
 export function retrieveActivities(dispatch) {
   axios.get(`${BACKEND_URL}/activities`).then((result) => {
     dispatch(retrieveActivityAction(result.data.activities));
+  });
+}
+export function createActivity(dispatch, activity) {
+  return new Promise((resolve, reject) => {
+    axios.post(`${BACKEND_URL}/createActivity`, activity).then((result) => {
+      dispatch(createActivity(result.data.trip));
+      resolve(result.data.activity.id);
+    });
   });
 }
