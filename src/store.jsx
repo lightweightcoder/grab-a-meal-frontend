@@ -12,13 +12,13 @@ export const initialState = {
 
 // just like the todo app, define each action we want to do on the
 // data we defined above
-const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
-const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
-const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
-const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
-const LEAVE_ACTIVITY = 'LEAVE_ACTIVITY';
-const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
-const UPDATE_PROFILE = 'UPDATE_PROFILE';
+// const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
+// const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
+// const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
+// const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
+// const LEAVE_ACTIVITY = 'LEAVE_ACTIVITY';
+// const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
+// const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 // define the matching reducer function
 export function appReducer(state, action) {
@@ -38,14 +38,14 @@ export function appReducer(state, action) {
 // and return an object that represents that action, which is typically
 // passed to the dispatch function. Actions always contain a type attribute
 // used to identify the action and tell the reducer what logic to run.
-export function addCartAction(item) {
-  return {
-    type: ADD_CART,
-    payload: {
-      item,
-    },
-  };
-}
+// export function addCartAction(item) {
+//   return {
+//     type: ADD_CART,
+//     payload: {
+//       item,
+//     },
+//   };
+// }
 
 /* ********************************
  * ********************************
@@ -91,7 +91,7 @@ export function AppProvider({ children }) {
 //
 // these functions must be passed the dispatch from the current context
 
-const BACKEND_URL = 'http://localhost:3004';
+export const BACKEND_URL = 'http://localhost:3004';
 
 // export function loadItems(dispatch) {
 //   axios.get(`${BACKEND_URL}/items`).then((result) => {
