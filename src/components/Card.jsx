@@ -10,30 +10,24 @@ export default function CardComponent({
       <Card>
         <Card.Header>
           <div className="row">
-            <div className="col-5">
+            <div className="col-9">
               <h5>
-                Activity Name
-                {' '}
                 {title}
-                {' '}
               </h5>
             </div>
-            <div className="col-1 offset-5">
+            <div className="col-1 offset-1">
               <button type="button" className="btn-circle"> Join </button>
             </div>
           </div>
         </Card.Header>
         <Card.Body>
           <Card.Title>
-            Date and Time
             {date}
             <br />
-            Location
             {location}
           </Card.Title>
           <Card.Text>
-            Number of Participants: 1 / 4
-            {' '}
+            Number of Participants: 1/
             {totalNumParticipant}
           </Card.Text>
         </Card.Body>
