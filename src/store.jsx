@@ -12,19 +12,19 @@ export const initialState = {
 
 // just like the todo app, define each action we want to do on the
 // data we defined above
-// const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
-// const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
-// const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
-// const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
-// const LEAVE_ACTIVITY = 'LEAVE_ACTIVITY';
-// const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
-// const UPDATE_PROFILE = 'UPDATE_PROFILE';
+const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
+const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
+const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
+const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
+const LEAVE_ACTIVITY = 'LEAVE_ACTIVITY';
+const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
+const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
 // define the matching reducer function
 export function appReducer(state, action) {
   switch (action.type) {
-    // case ADD_CART:
-    //   return { ...state, cart: [...state.cart, action.payload.item] };
+    case RETRIEVE_ACTIVITY:
+      return { ...state, activities: action.payload.activities };
     // case REMOVE_CART:
     //   const cart = state.filter((_item, i) => action.payload.cartIttemIndex !== i);
     //   return { ...state, cart };
@@ -46,6 +46,14 @@ export function appReducer(state, action) {
 //     },
 //   };
 // }
+export function retrieveActivityAction(activities) {
+  return {
+    type: RETRIEVE_ACTIVITY,
+    payload: {
+      activities,
+    },
+  };
+}
 
 /* ********************************
  * ********************************
@@ -93,8 +101,8 @@ export function AppProvider({ children }) {
 
 export const BACKEND_URL = 'http://localhost:3004';
 
-// export function loadItems(dispatch) {
-//   axios.get(`${BACKEND_URL}/items`).then((result) => {
-//     dispatch(loadItemsAction(result.data.items));
-//   });
-// }
+export function retrieveActivities(dispatch) {
+  axios.get(`${BACKEND_URL}/activities`).then((result) => {
+    dispatch(retrieveActivityAction(result.data.activities));
+  });
+}

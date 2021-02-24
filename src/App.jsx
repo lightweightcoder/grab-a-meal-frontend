@@ -8,26 +8,25 @@ import {
 import NavbarComponent from './components/NavBar.jsx';
 import LoginComponent from './components/Login.jsx';
 import RegistrationComponent from './components/Registration.jsx';
+import HomeComponent from './components/Home.jsx';
+import { AppProvider } from './store.jsx';
 
 function App() {
   return (
     <>
-      <Router>
-        <NavbarComponent />
-        <Switch>
-          <Route path="/home" component="" />
-          <Route path="/profile" component="" />
-          <Route path="/messages" component="" />
-          <Route path="/logout" component="" />
-          <Route path="/login" component={LoginComponent} />
-          <Route path="/register" component={RegistrationComponent} />
-          <Route path="/" />
-        </Switch>
-        <div className="container">
-          <p> hello world</p>
-        </div>
-      </Router>
-
+      <AppProvider>
+        <Router>
+          <NavbarComponent />
+          <Switch>
+            <Route path="/home" component={HomeComponent} />
+            <Route path="/profile" component="" />
+            <Route path="/messages" component="" />
+            <Route path="/logout" component="" />
+            <Route path="/login" component={LoginComponent} />
+            <Route path="/register" component={RegistrationComponent} />
+          </Switch>
+        </Router>
+      </AppProvider>
     </>
   );
 }
