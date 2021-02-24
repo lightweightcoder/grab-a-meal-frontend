@@ -12,6 +12,8 @@ function App() {
       <Router >
         <NavbarComponent/>
         <Switch>
+          <Route path='/' component={''} />
+          <Route path='/login' component={''}/>
           <Route path='/home' component={''}/>
           <Route path='/profile' component={''}/>
           <Route path='/messages' component={''}/>
