@@ -35,7 +35,7 @@ export default function Login() {
 
   return (
     <>
-      <Form className="form">
+      <Form className="login-form">
         <Row className="justify-content-center">
           <Col xs={5} className="justify-content-center">
             <img src="./logo.png" alt="" className="img-fluid" />
@@ -43,7 +43,7 @@ export default function Login() {
         </Row>
         <Row className="justify-content-center">
           <Col>
-            <p className="invalid-message">{invalidMessage}</p>
+            <p className="login-invalid-message">{invalidMessage}</p>
           </Col>
         </Row>
         <Form.Group controlId="email">

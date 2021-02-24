@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import NavbarComponent from './components/NavBar.jsx';
 import Login from './components/Login.jsx';
+import Register from './components/Register.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/messages" component="" />
           <Route path="/logout" component="" />
           <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
           <Route path="/" />
         </Switch>
         <div className="container">
