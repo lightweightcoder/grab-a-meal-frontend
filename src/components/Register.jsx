@@ -10,7 +10,7 @@ import { BACKEND_URL } from '../store.jsx';
 
 export default function Register() {
   const [formInputs, setformInputs] = useState({
-    email: '', password: '', name: '', dateOfBirth: '', gender: '',
+    email: '', password: '', name: '', dateOfBirth: '', gender: 'male',
   });
   const [invalidMessage, setInvalidMessage] = useState('');
   const [validated, setValidated] = useState(false);
