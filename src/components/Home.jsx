@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Modal, Button, ButtonGroup } from 'react-bootstrap';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import CardComponent from './Card.jsx';
 import './Home.css';
+import CreateActivity from './CreateActivity.jsx';
 import {
   AppContext,
   retrieveActivities,
