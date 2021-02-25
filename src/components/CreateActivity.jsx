@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import {
   Button, Form, Row, Col,
 } from 'react-bootstrap';
+import DateTimePicker from 'react-datetime-picker';
 import '../component-stylesheets/CreateActivity.css';
 
 import { categoryOptions, numOfParticipantsOptions } from '../utilities/activityForm.jsx';
@@ -37,8 +38,8 @@ export default function CreateActivityComponent() {
 
   return (
     <div className="container">
-      <div className="row">
-        <div className="col-12">
+      <div className="row d-flex justify-content-center">
+        <div className="col-12 col-md-10 col-xl-8">
           <div className="create-activity-form-container">
             <h4 className="create-activity-heading">Create activity</h4>
             <Form>
@@ -76,6 +77,15 @@ export default function CreateActivityComponent() {
                   </Form.Group>
                 </Col>
               </Row>
+
+              <Form.Group controlId="dateTime">
+                <Form.Label>Date and Time</Form.Label>
+                <br />
+                <DateTimePicker
+                  onChange={(value) => setNewActivity({ ...newActivity, dateTime: value })}
+                  value={newActivity.dateTime}
+                />
+              </Form.Group>
 
               <Button variant="success" className="btn-block" onClick={handleCreateActivity}>
                 Submit
