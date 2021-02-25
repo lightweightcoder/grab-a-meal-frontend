@@ -21,7 +21,7 @@ export default function CreateActivityComponent() {
   const { dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
-    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '1', location: '', isExisting: true, categoryId: '1',
+    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '1', location: '', categoryId: '1',
   });
 
   // create a hook to use when the logic says to change components
