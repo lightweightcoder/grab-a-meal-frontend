@@ -30,7 +30,13 @@ export default function CreateActivityComponent() {
   // handle when user clicks on the 'submit' button to create an activity
   const handleCreateActivity = () => {
     // make an axios post request to create an activity
-    createActivity(dispatch, newActivity).then(() => {
+    createActivity(dispatch, newActivity).then((result) => {
+      // if there was an error redirect user to login
+      if (result.error) {
+        history.push('/login');
+        return;
+      }
+
       // take the user to the chat room of the newly created chat
       history.push('/chats');
     });
