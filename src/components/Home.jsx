@@ -36,7 +36,7 @@ export default function HomeComponent() {
   return (
     <div>
       <div className="container create-button-div">
-        <Link to="/activities/new" className="btn btn-primary" role="button">Create New Activity</Link>
+        <Button variant="primary"> Create an activity</Button>
       </div>
       <div className="container container-div">
         <ButtonGroup aria-label="Basic example">
