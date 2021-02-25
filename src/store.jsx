@@ -116,24 +116,11 @@ export function retrieveActivities(dispatch) {
     dispatch(retrieveActivityAction(result.data.activities));
   });
 }
-
 export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
-    axios.post(`${BACKEND_URL}/activities`, activity)
-      .then((result) => {
-        dispatch(createActivityAction(result.data.newActivity));
-        resolve(result.data.newActivity.id);
-      })
-      .catch((error) => {
-        console.log('create activity error', error);
-
-        // redirect user to login page as user tried to access a forbidden page
-        if (error.message === 'Request failed with status code 403') {
-          console.log('forbidden error');
-          resolve({ error: true });
-        }
-
-        resolve({ error: true });
-      });
+    axios.post(`${BACKEND_URL}/createActivity`, activity).then((result) => {
+      dispatch(createActivity(result.data.trip));
+      resolve(result.data.activity.id);
+    });
   });
 }
