@@ -1,12 +1,14 @@
-.container-div{
+.container-div {
   align-items: center;
 }
-.create-button-div{
+
+.create-button-div {
   margin-bottom: 1rem;
   justify-content: center;
-  align-items: center ;
+  align-items: center;
 }
-.feed-container{
+
+.feed-container {
   height: auto;
   min-height: 250px;
   border-style: solid;
