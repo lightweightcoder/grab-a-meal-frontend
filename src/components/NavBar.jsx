@@ -1,11 +1,12 @@
 import React from 'react';
+import '../component-stylesheets/NavBar.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 
 export default function NavbarComponent() {
   return (
-    <div className="navbar-container">
+    <div className="navbar-container app-navbar">
       <Navbar bg="light" expand="lg">
         <LinkContainer to="/home">
           <Navbar.Brand>
