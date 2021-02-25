@@ -119,8 +119,8 @@ export function retrieveActivities(dispatch) {
 export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
     axios.post(`${BACKEND_URL}/activities`, activity).then((result) => {
-      dispatch(createActivityAction(result.data.trip));
-      resolve(result.data.activity.id);
+      dispatch(createActivityAction(result.data.newActivity));
+      resolve(result.data.newActivity.id);
     });
   });
 }
