@@ -20,7 +20,7 @@ export default function CardComponent({
             </div>
           </div>
         </Card.Header>
-        <Card.Body>
+        <Card.Body onClick={onClick}>
           <Card.Title>
             {date}
             <br />
