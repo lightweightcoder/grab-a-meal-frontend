@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Button from 'react-bootstrap/Button';
+import { Modal, Button, ButtonGroup } from 'react-bootstrap';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 import CardComponent from './Card.jsx';
 import './Home.css';
 import {
@@ -13,20 +12,74 @@ import {
 export default function HomeComponent() {
   const { store, dispatch } = useContext(AppContext);
   const { activities } = store;
+  const [displayCardDetails, setdisplayCardDetails] = useState(false);
+  const [activityDetails, setActivityDetails] = useState({
+    name: '',
+    description: '',
+    dateTime: '',
+    totalNumOfParticipants: '',
+    location: '',
+    creatorId: '',
+  });
   // console.log(activities[0].name);
   useEffect(() => {
     retrieveActivities(dispatch);
   }, []);
+  const handleDisplay = (activity) => {
+    setActivityDetails({
+      ...activityDetails,
+      name: activity.name,
+      description: activity.description,
+      dateTime: activity.dateTime,
+      totalNumOfParticipants: activity.totalNumOfParticipants,
+      location: activity.location,
+      creatorId: activity.creatorId,
+    });
+    setdisplayCardDetails(true);
+  };
+  const handleDisplayClose = () => {
+    setdisplayCardDetails(false);
+  };
+  const cardSelectionModal = () => (
+    <Modal show={displayCardDetails} onHide={handleDisplayClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>{activityDetails.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        Description:
+        {' '}
+        {activityDetails.description}
+        <br />
+        Location:
+        {' '}
+        {activityDetails.location}
+        <br />
+        Date:
+        {' '}
+        {moment(activityDetails.dateTime).format('ll')}
+        <br />
+        Participants:
+        {' '}
+        {activityDetails.totalNumOfParticipants}
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="success"> Join </Button>
+        <Button variant="secondary" onClick={handleDisplayClose}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 
   const activityDisplay = () => {
     const activityFeed = activities.map((activity) => (
       <div key={activity.id}>
-        {console.log(activity)}
         <CardComponent
           title={activity.name}
           date={moment(activity.dateTime).format('ll')}
           location={activity.location}
           totalNumParticipant={activity.totalNumOfParticipants}
+          onClick={() => { handleDisplay(activity); }}
         />
       </div>
     ));
@@ -48,6 +101,7 @@ export default function HomeComponent() {
       <br />
       <div className="container feed-container">
         {activityDisplay()}
+        {cardSelectionModal()}
       </div>
     </div>
   );
