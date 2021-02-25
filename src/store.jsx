@@ -119,7 +119,7 @@ export function retrieveActivities(dispatch) {
 export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
     axios.post(`${BACKEND_URL}/activities`, activity).then((result) => {
-      dispatch(createActivity(result.data.trip));
+      dispatch(createActivityAction(result.data.trip));
       resolve(result.data.activity.id);
     });
   });

@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import moment from 'moment';
 import CardComponent from './Card.jsx';
+import CreateActivity from './CreateActivity.jsx';
 import './Home.css';
 import {
   AppContext,
@@ -35,7 +37,7 @@ export default function HomeComponent() {
   return (
     <div>
       <div className="container create-button-div">
-        <Button variant="primary"> Create an activity</Button>
+        <Link to="/activities/new" className="btn btn-primary" role="button">Create New Activity</Link>
       </div>
       <div className="container container-div">
         <ButtonGroup aria-label="Basic example">

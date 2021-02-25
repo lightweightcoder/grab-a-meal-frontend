@@ -1,0 +1,9 @@
+.create-activity-form-container {
+  padding: 8px;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.create-activity-heading {
+  text-align: center;
+}
