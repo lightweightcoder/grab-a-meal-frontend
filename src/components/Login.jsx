@@ -6,18 +6,36 @@ import {
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { BACKEND_URL } from '../store.jsx';
+import firebase from '../Firebase.js';
 
 export default function Login() {
+  // create a hook to use when the logic says to change components
+  const history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [invalidMessage, setInvalidMessage] = useState('');
 
-  // create a hook to use when the logic says to change components
-  const history = useHistory();
+  // Firebase stuff
+  const [creds, setCreds] = useState({ email: '' });
+  // const [showLoading, setShowLoading] = useState(false);
+  const ref = firebase.database().ref('users/');
 
   const handleLogin = () => {
     console.log('handle login');
 
+    ref.orderByChild('email').equalTo(creds.email).once('value', (snapshot) => {
+      if (snapshot.exists()) {
+        localStorage.setItem('email', creds.email);
+        history.push('/roomlist');
+        // setShowLoading(false);
+      } else {
+        const newUser = firebase.database().ref('users/').push();
+        newUser.set(creds);
+        localStorage.setItem('email', creds.email);
+        history.push('/roomlist');
+        // setShowLoading(false);
+      }
+    });
     axios.post(`${BACKEND_URL}/login`, { email, password }).then((result) => {
       // if validation failed for login, display validation message
       if (result.data.invalidMessage) {
@@ -33,6 +51,11 @@ export default function Login() {
     });
   };
 
+  const onEmailChange = (e) => {
+    setEmail(e.target.value);
+    e.persist();
+    setCreds({ ...creds, [e.target.name]: e.target.value });
+  };
   return (
     <>
       <Form className="login-form">
@@ -48,7 +71,7 @@ export default function Login() {
         </Row>
         <Form.Group controlId="email">
           <Form.Label>Email</Form.Label>
-          <Form.Control type="email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Form.Control type="email" name="email" placeholder="" value={email} onChange={onEmailChange} />
         </Form.Group>
 
         <Form.Group controlId="password">

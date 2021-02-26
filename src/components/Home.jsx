@@ -21,6 +21,7 @@ export default function HomeComponent() {
     totalNumOfParticipants: '',
     location: '',
     creatorId: '',
+    creatorName: '',
   });
   useEffect(() => {
     retrieveActivities(dispatch);
@@ -34,6 +35,7 @@ export default function HomeComponent() {
       totalNumOfParticipants: activity.totalNumOfParticipants,
       location: activity.location,
       creatorId: activity.creatorId,
+      creatorName: activity.creator.name,
     });
     setdisplayCardDetails(true);
   };
@@ -61,6 +63,10 @@ export default function HomeComponent() {
         Participants:
         {' '}
         {activityDetails.totalNumOfParticipants}
+        <br />
+        Event Organized By:
+        {' '}
+        {activityDetails.creatorName}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="success"> Join </Button>
@@ -74,6 +80,7 @@ export default function HomeComponent() {
   const activityDisplay = () => {
     const activityFeed = activities.map((activity) => (
       <div key={activity.id}>
+        {console.log(activity)}
         <CardComponent
           title={activity.name}
           date={moment(activity.dateTime).format('ll')}
