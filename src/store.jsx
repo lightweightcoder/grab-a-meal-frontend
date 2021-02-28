@@ -142,7 +142,7 @@ export function createActivity(dispatch, activity) {
 export function joinActivity(dispatch, activityId) {
   // create a new entry in the activities_users table of the DB
   // i.e. the user is recorded as a participant of an activity
-  return axios.get(`${BACKEND_URL}/activities/${activityId}/join`)
+  return axios.post(`${BACKEND_URL}/activities/${activityId}/participants`)
     .then((result) => {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));
