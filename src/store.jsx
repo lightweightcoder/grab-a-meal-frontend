@@ -116,6 +116,7 @@ export function retrieveActivities(dispatch) {
     dispatch(retrieveActivityAction(result.data.activities));
   });
 }
+
 export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
     axios.post(`${BACKEND_URL}/activities`, activity)
@@ -135,4 +136,31 @@ export function createActivity(dispatch, activity) {
         resolve({ error: true });
       });
   });
+}
+
+// let a user become a participant of that activity
+export function joinActivity(dispatch, activityId) {
+  // create a new entry in the activities_users table of the DB
+  // i.e. the user is recorded as a participant of an activity
+  return axios.get(`${BACKEND_URL}/activities/${activityId}/join`)
+    .then((result) => {
+      // update the store in AppProvider with the updated activities
+      dispatch(retrieveActivityAction(result.data.activities));
+
+      // return error is false to prevent
+      // TypeError: Cannot read property 'error' of undefined
+      // in Home.jsx from occuring
+      return { error: false };
+    })
+    .catch((error) => {
+      console.log('join activity error', error);
+
+      // redirect user to login page as user tried to access a forbidden page
+      if (error.message === 'Request failed with status code 403') {
+        console.log('forbidden error');
+        return { error: true };
+      }
+
+      return { error: true };
+    });
 }
