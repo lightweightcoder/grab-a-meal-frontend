@@ -109,7 +109,9 @@ export default function HomeComponent() {
           title={activity.name}
           date={moment(activity.dateTime).format('ll')}
           location={activity.location}
-          totalNumParticipant={activity.totalNumOfParticipants}
+          totalNumOfParticipants={activity.totalNumOfParticipants}
+          usualPrice={activity.usualPrice}
+          discountedPrice={activity.discountedPrice}
           onClick={() => { handleDisplay(activity); }}
         />
       </div>
