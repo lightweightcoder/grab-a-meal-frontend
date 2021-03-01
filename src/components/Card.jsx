@@ -3,7 +3,7 @@ import { Card, Row, Col } from 'react-bootstrap';
 import './Card.css';
 
 export default function CardComponent({
-  title, date, location, onClick, totalNumOfParticipants, usualPrice, discountedPrice,
+  title, date, location, onClick, totalNumOfParticipants, usualPrice, discountedPrice, participants,
 }) {
   // eslint-disable-next-line max-len
   const percentageDiscount = Number((((Number(usualPrice) - Number(discountedPrice)) / Number(usualPrice)) * 100).toFixed(2));
@@ -35,8 +35,7 @@ export default function CardComponent({
                 {location}
               </Card.Title>
               <Card.Text>
-                Number of Participants: 1/
-                {totalNumOfParticipants}
+                {`Number of Participants: ${participants.length}/${totalNumOfParticipants}`}
               </Card.Text>
             </Col>
             <Col xs={4}>

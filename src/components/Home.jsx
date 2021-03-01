@@ -112,6 +112,7 @@ export default function HomeComponent() {
           totalNumOfParticipants={activity.totalNumOfParticipants}
           usualPrice={activity.usualPrice}
           discountedPrice={activity.discountedPrice}
+          participants={activity.users}
           onClick={() => { handleDisplay(activity); }}
         />
       </div>
