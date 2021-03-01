@@ -32,6 +32,8 @@ export default function HomeComponent() {
     retrieveActivities(dispatch);
   }, []);
 
+  // update the state that stores the details of a selected activity and show the modal
+  // containing the activity's details
   const handleDisplay = (activity) => {
     setActivityDetails({
       ...activityDetails,
@@ -43,7 +45,9 @@ export default function HomeComponent() {
       location: activity.location,
       creatorId: activity.creatorId,
       creatorName: activity.creator.name,
+      participants: activity.users,
     });
+
     setdisplayCardDetails(true);
   };
 
@@ -86,7 +90,7 @@ export default function HomeComponent() {
         <br />
         Participants:
         {' '}
-        {activityDetails.totalNumOfParticipants}
+        {`${activityDetails.participants.length}/${activityDetails.totalNumOfParticipants}`}
         <br />
         Event Organized By:
         {' '}
