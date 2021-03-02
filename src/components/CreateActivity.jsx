@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
@@ -21,7 +22,7 @@ export default function CreateActivityComponent() {
   const { dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
-    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '1', location: '', categoryId: '1',
+    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '1', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
 
   // create a hook to use when the logic says to change components
@@ -40,6 +41,38 @@ export default function CreateActivityComponent() {
       // take the user to the chat room of the newly created chat
       history.push('/chats');
     });
+  };
+
+  // handle when user changes the usual price
+  const handleUsualPriceChange = (e) => {
+    // change the usual price to 2 decimal places
+    const usualPrice = Math.round(Number(e.target.value) * 100) / 100;
+
+    // eslint-disable-next-line max-len
+    const percentageDiscount = Math.round(((Number(usualPrice) - Number(newActivity.discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+
+    setNewActivity({ ...newActivity, usualPrice, percentageDiscount });
+  };
+
+  // handle when user changes the discounted price
+  const handleDiscountedPriceChange = (e) => {
+    // change the discounted price to 2 decimal places
+    const discountedPrice = Math.round(Number(e.target.value) * 100) / 100;
+
+    const percentageDiscount = Math.round(((Number(newActivity.usualPrice) - Number(discountedPrice)) / Number(newActivity.usualPrice)) * 10000) / 100;
+
+    setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
+  };
+
+  // handle when user changes the discount percentage
+  const handlePercentageDiscountChange = (e) => {
+    // change the percentage discounted to 2 decimal places
+    const percentageDiscount = Math.round(Number(e.target.value) * 100) / 100;
+
+    // calculate the new discounted price
+    const discountedPrice = Math.round(Number(newActivity.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
+
+    setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
   };
 
   return (
@@ -63,6 +96,29 @@ export default function CreateActivityComponent() {
                 <Form.Label>Location</Form.Label>
                 <Form.Control required type="text" value={newActivity.location} onChange={(e) => setNewActivity({ ...newActivity, location: e.target.value })} />
               </Form.Group>
+
+              <Row>
+                <Col>
+                  <Form.Group controlId="usualPrice">
+                    <Form.Label>Usual Price($)</Form.Label>
+                    <Form.Control required type="number" value={newActivity.usualPrice} onChange={handleUsualPriceChange} />
+                  </Form.Group>
+                </Col>
+
+                <Col>
+                  <Form.Group controlId="discountedPrice">
+                    <Form.Label>Discounted Price($)</Form.Label>
+                    <Form.Control required type="number" value={newActivity.discountedPrice} onChange={handleDiscountedPriceChange} />
+                  </Form.Group>
+                </Col>
+
+                <Col>
+                  <Form.Group controlId="percentDiscount">
+                    <Form.Label>Discount(%)</Form.Label>
+                    <Form.Control required type="number" value={newActivity.percentageDiscount} onChange={handlePercentageDiscountChange} />
+                  </Form.Group>
+                </Col>
+              </Row>
 
               <Row>
                 <Col>
