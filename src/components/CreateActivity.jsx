@@ -141,7 +141,7 @@ export default function CreateActivityComponent() {
               </Row>
 
               <Form.Group controlId="dateTime">
-                <Form.Label>Date and Time</Form.Label>
+                <Form.Label>Proposed Date and Time</Form.Label>
                 <br />
                 <DateTimePicker
                   onChange={(value) => setNewActivity({ ...newActivity, dateTime: value })}
