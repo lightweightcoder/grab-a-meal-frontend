@@ -5,8 +5,6 @@ import './Card.css';
 export default function CardComponent({
   title, date, location, onClick, totalNumOfParticipants, usualPrice, discountedPrice, participants,
 }) {
-  console.log('title', title);
-  console.log('participants in card.jsx', participants);
   // eslint-disable-next-line max-len
   const percentageDiscount = Number((((Number(usualPrice) - Number(discountedPrice)) / Number(usualPrice)) * 100).toFixed(2));
 
