@@ -78,7 +78,6 @@ export default function HomeComponent() {
   const cardSelectionModal = () => {
     // get the userId from the browser cookie
     const userId = Number(cookies.userId);
-    console.log('userId is', userId);
 
     // if state is view, show activity details,
     // and show buttons based on the user's relation to the activity
