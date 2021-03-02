@@ -12,6 +12,15 @@ export default function MessageChat(props) {
   } = props;
 
   const friendlyTimestamp = moment(data.timestamp).format('LLLL');
+
+  // const fetchMessageBodyData = async () => {
+  //   setEmail(localStorage.getItem('email'));
+  //   firebase.database().ref('chats/').on('value', (resp) => {
+  //     const a = snapshotToArray(resp);
+  //     console.log(a);
+  //   });
+  // };
+  // fetchMessageBodyData();
   return (
     <div className={[
       'message',

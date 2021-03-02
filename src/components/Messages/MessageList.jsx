@@ -3,93 +3,64 @@ import moment from 'moment';
 // import Compose from '../Compose';
 // import Toolbar from '../Toolbar';
 // import ToolbarButton from '../ToolbarButton';
+import {
+  Link,
+  useHistory,
+  useParams,
+} from 'react-router-dom';
 import MessageChat from './MessageChat.jsx';
+import firebase from '../../Firebase.js';
 
 import './Message.css';
 
 const MY_USER_ID = 'apple';
 
-export default function MessageList(props) {
-  const [messages, setMessages] = useState([]);
+export default function MessageList({
+  conversationTitles, setConversationsTitles, showLoading, setShowLoading,
+}) {
+  // const [messages, setMessages] = useState([]);
+  const [email, setEmail] = useState('');
+  const [chats, setChats] = useState([]);
+  const [newChat, setNewChat] = useState({
+    roomname: '', email: '', message: '', date: '', type: '',
+  });
+  const history = useHistory();
 
-  const getMessages = () => {
-    const tempMessages = [
-      {
-        id: 1,
-        author: 'apple',
-        message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 2,
-        author: 'orange',
-        message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 3,
-        author: 'orange',
-        message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 4,
-        author: 'apple',
-        message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 5,
-        author: 'apple',
-        message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 6,
-        author: 'apple',
-        message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 7,
-        author: 'orange',
-        message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 8,
-        author: 'orange',
-        message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 9,
-        author: 'apple',
-        message: 'Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.',
-        timestamp: new Date().getTime(),
-      },
-      {
-        id: 10,
-        author: 'orange',
-        message: 'It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!',
-        timestamp: new Date().getTime(),
-      },
-    ];
-    setMessages([...messages, ...tempMessages]);
+  // function that extracts Firebase response to Array of Objects
+  const snapshotToArray = (snapshot) => {
+    const returnArr = [];
+
+    snapshot.forEach((childSnapshot) => {
+      const item = childSnapshot.val();
+      item.key = childSnapshot.key;
+      returnArr.push(item);
+    });
+    return returnArr;
   };
+  // Retrieval from Firebase: Message Content
   useEffect(() => {
-    getMessages();
-  }, []);
+    const fetchData = async () => {
+      setEmail(localStorage.getItem('email'));
+      firebase.database().ref('chats/').orderByChild('roomname').equalTo(conversationTitles[0].roomname)
+        .on('value', (resp) => {
+          setChats([]);
+          setChats(snapshotToArray(resp));
+          console.log(chats);
+        });
+    };
+
+    fetchData();
+  }, [conversationTitles]);
 
   const renderMessages = () => {
     let i = 0;
-    const messageCount = messages.length;
+    const messageCount = chats.length;
     const tempMessages = [];
 
     while (i < messageCount) {
-      const previous = messages[i - 1];
-      const current = messages[i];
-      const next = messages[i + 1];
+      const previous = chats[i - 1];
+      const current = chats[i];
+      const next = chats[i + 1];
       const isMine = current.author === MY_USER_ID;
       const currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;

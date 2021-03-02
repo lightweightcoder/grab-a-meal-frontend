@@ -23,82 +23,7 @@ import './Message.css';
 
 axios.defaults.withCredentials = false;
 
-export default function ConversationList() {
-  const [name, setName] = useState('');
-  const [conversationTitles, setConversationsTitle] = useState([]);
-  const [showLoading, setShowLoading] = useState(true);
-  const [email, setEmail] = useState('');
-  const [chats, setChats] = useState([]);
-  // const [email, setemail] = useState('');
-  const [roomname, setRoomname] = useState('');
-  const [newChat, setNewChat] = useState({
-    roomname: '', email: '', message: '', date: '', type: '',
-  });
-  const history = useHistory();
-  const { room } = useParams();
-  // // function that extracts Firebase response to Array of Objects
-  // const snapshotToArray = (snapshot) => {
-  //   const returnArr = [];
-
-  //   snapshot.forEach((childSnapshot) => {
-  //     const item = childSnapshot.val();
-  //     item.key = childSnapshot.key;
-  //     returnArr.push(item);
-  //   });
-  //   console.log(returnArr);
-  //   return returnArr;
-  // };
-
-  // // Retrieval from Firebase: Message Content
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setEmail(localStorage.getItem('email'));
-  //     setRoomname(room);
-  //     firebase.database().ref('chats/').orderByChild('roomname').equalTo(roomname)
-  //       .on('value', (resp) => {
-  //         setChats([]);
-  //         setChats(snapshotToArray(resp));
-  //       });
-  //   };
-
-  //   fetchData();
-  // }, [room, roomname]);
-
-  // Retrieval from FireBase: Activity Message Title
-  const snapshotToTitleArray = (snapshot) => {
-    const returnTitleArr = [];
-
-    snapshot.forEach((childSnapshot) => {
-      const item = childSnapshot.val();
-      item.key = childSnapshot.key;
-      returnTitleArr.push(item);
-    });
-    // console.log(returnTitleArr);
-
-    return returnTitleArr;
-  };
-  useEffect(() => {
-    const fetchMessageTitleData = async () => {
-      setEmail(localStorage.getItem('email'));
-      firebase.database().ref('rooms/').on('value', (resp) => {
-        // console.log(resp);
-        // console.log(resp.val(), 'val');
-        setConversationsTitle([]);
-        setConversationsTitle(snapshotToTitleArray(resp));
-        setShowLoading(false);
-      });
-    };
-    const fetchMessageBodyData = async () => {
-      setEmail(localStorage.getItem('email'));
-      firebase.database().ref('chats/').on('value', (resp) => {
-        const a = snapshotToTitleArray(resp);
-        console.log(a);
-      });
-    };
-    // fetchMessageTitleData();
-    fetchMessageBodyData();
-  }, []);
-
+export default function ConversationList({ conversationTitles, setConversationTitles, showLoading }) {
   // send data that contain enter conversations status to Firebase DB
   // const enterChatRoom = (roomname) => {
   //   // Welcome/Entry message for chat conversations. e.g "So and so joined the conversations"
@@ -146,10 +71,9 @@ export default function ConversationList() {
   };
   return (
     <div>
-      {showLoading
-            && <Spinner color="primary" />}
       <div className="conversations-list">
-        {/* {convoListJsx()} */}
+        {convoListJsx()}
+        {/* {console.log(conversationTitles)} */}
         {/* <Toolbar
         title="Messenger"
         leftItems={[
