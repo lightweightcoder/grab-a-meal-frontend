@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   Link,
   useHistory,
+  useParams,
 } from 'react-router-dom';
 import {
   Jumbotron,
@@ -23,77 +24,118 @@ import './Message.css';
 axios.defaults.withCredentials = false;
 
 export default function ConversationList() {
-  // const [conversations, setConversations] = useState({ list: [] });
   const [name, setName] = useState('');
-  const [conversations, setConversations] = useState([]);
+  const [conversationTitles, setConversationsTitle] = useState([]);
   const [showLoading, setShowLoading] = useState(true);
   const [email, setEmail] = useState('');
+  const [chats, setChats] = useState([]);
+  // const [email, setemail] = useState('');
+  const [roomname, setRoomname] = useState('');
+  const [newChat, setNewChat] = useState({
+    roomname: '', email: '', message: '', date: '', type: '',
+  });
   const history = useHistory();
+  const { room } = useParams();
+  // // function that extracts Firebase response to Array of Objects
+  // const snapshotToArray = (snapshot) => {
+  //   const returnArr = [];
 
-  const snapshotToArray = (snapshot) => {
-    const returnArr = [];
+  //   snapshot.forEach((childSnapshot) => {
+  //     const item = childSnapshot.val();
+  //     item.key = childSnapshot.key;
+  //     returnArr.push(item);
+  //   });
+  //   console.log(returnArr);
+  //   return returnArr;
+  // };
+
+  // // Retrieval from Firebase: Message Content
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setEmail(localStorage.getItem('email'));
+  //     setRoomname(room);
+  //     firebase.database().ref('chats/').orderByChild('roomname').equalTo(roomname)
+  //       .on('value', (resp) => {
+  //         setChats([]);
+  //         setChats(snapshotToArray(resp));
+  //       });
+  //   };
+
+  //   fetchData();
+  // }, [room, roomname]);
+
+  // Retrieval from FireBase: Activity Message Title
+  const snapshotToTitleArray = (snapshot) => {
+    const returnTitleArr = [];
 
     snapshot.forEach((childSnapshot) => {
       const item = childSnapshot.val();
       item.key = childSnapshot.key;
-      returnArr.push(item);
+      returnTitleArr.push(item);
     });
-    console.log(returnArr);
+    // console.log(returnTitleArr);
 
-    return returnArr;
+    return returnTitleArr;
   };
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchMessageTitleData = async () => {
       setEmail(localStorage.getItem('email'));
       firebase.database().ref('rooms/').on('value', (resp) => {
         // console.log(resp);
         // console.log(resp.val(), 'val');
-        setConversations([]);
-        setConversations(snapshotToArray(resp));
-        console.log(conversations);
+        setConversationsTitle([]);
+        setConversationsTitle(snapshotToTitleArray(resp));
         setShowLoading(false);
       });
     };
-
-    fetchData();
-  }, []);
-  // send data that contain enter conversations status to Firebase DB
-  const enterChatRoom = (roomname) => {
-    // Welcome/Entry message for chat conversations. e.g "So and so joined the conversations"
-    const chat = {
-      roomname: '', email: '', message: '', date: '', type: '',
-    };
-    chat.roomname = roomname;
-    chat.email = email;
-    chat.date = Moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
-    chat.message = `${email} enter the conversations `;
-    chat.type = 'join';
-    const newMessage = firebase.database().ref('chats/').push();
-    newMessage.set(chat);
-    // Retrieve roomusers table and query DB to find if user exist
-    firebase.database().ref('roomusers/').orderByChild('roomname').equalTo(roomname)
-      .on('value', (resp) => {
-        let roomuser = [];
-        roomuser = snapshotToArray(resp);
-        const user = roomuser.find((x) => x.email === email);
-        if (user !== undefined) {
-          const userRef = firebase.database().ref(`roomusers/${user.key}`);
-          userRef.update({ status: 'online' });
-        } else {
-          const newroomuser = { roomname: '', email: '', status: '' };
-          newroomuser.roomname = roomname;
-          newroomuser.email = email;
-          newroomuser.status = 'online';
-          const newRoomUser = firebase.database().ref('roomusers/').push();
-          newRoomUser.set(newroomuser);
-        }
+    const fetchMessageBodyData = async () => {
+      setEmail(localStorage.getItem('email'));
+      firebase.database().ref('chats/').on('value', (resp) => {
+        const a = snapshotToTitleArray(resp);
+        console.log(a);
       });
+    };
+    // fetchMessageTitleData();
+    fetchMessageBodyData();
+  }, []);
 
-    history.push(`/chatroom/${roomname}`);
-  };
+  // send data that contain enter conversations status to Firebase DB
+  // const enterChatRoom = (roomname) => {
+  //   // Welcome/Entry message for chat conversations. e.g "So and so joined the conversations"
+  //   const chat = {
+  //     roomname: '', email: '', message: '', date: '', type: '',
+  //   };
+  //   chat.roomname = roomname;
+  //   chat.email = email;
+  //   chat.date = Moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
+  //   chat.message = `${email} enter the conversations `;
+  //   chat.type = 'join';
+  //   const newMessage = firebase.database().ref('chats/').push();
+  //   newMessage.set(chat);
+  //   // Retrieve roomusers table and query DB to find if user exist
+  //   firebase.database().ref('roomusers/').orderByChild('roomname').equalTo(roomname)
+  //     .on('value', (resp) => {
+  //       let roomuser = [];
+  //       roomuser = snapshotToTitleArray(resp);
+  //       const user = roomuser.find((x) => x.email === email);
+  //       if (user !== undefined) {
+  //         const userRef = firebase.database().ref(`roomusers/${user.key}`);
+  //         userRef.update({ status: 'online' });
+  //       } else {
+  //         const newroomuser = { roomname: '', email: '', status: '' };
+  //         newroomuser.roomname = roomname;
+  //         newroomuser.email = email;
+  //         newroomuser.status = 'online';
+  //         const newRoomUser = firebase.database().ref('roomusers/').push();
+  //         newRoomUser.set(newroomuser);
+  //       }
+  //     });
+
+  //   history.push(`/chatroom/${roomname}`);
+  // };
 
   const convoListJsx = () => {
-    const convoList = conversations.map((convo, i) => (
+    const convoList = conversationTitles.map((convo, i) => (
       <div key={convo.roomname}>
         <ConversationListItem
           title={convo.roomname}
@@ -107,8 +149,7 @@ export default function ConversationList() {
       {showLoading
             && <Spinner color="primary" />}
       <div className="conversations-list">
-        {convoListJsx()}
-        {}
+        {/* {convoListJsx()} */}
         {/* <Toolbar
         title="Messenger"
         leftItems={[
@@ -119,16 +160,6 @@ export default function ConversationList() {
         ]}
       /> */}
         {/* <ConversationSearch /> */}
-        {
-        // conversations.list.map((conversations) => (
-          //   <ConversationListItem
-          //     key={conversations.name}
-          //     name={conversations.name}
-          //     text={conversations.text}
-          //     // photo={conversations.photo}
-          //   />
-          // ))
-        }
       </div>
     </div>
   );
