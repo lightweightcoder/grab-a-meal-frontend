@@ -8,6 +8,7 @@ axios.defaults.withCredentials = true;
 export const initialState = {
   activities: [],
   profile: {},
+  selectedActivity: {},
 };
 
 // just like the todo app, define each action we want to do on the
@@ -26,7 +27,8 @@ export function appReducer(state, action) {
     case RETRIEVE_ACTIVITY:
       return { ...state, activities: action.payload.activities };
     case CREATE_ACTIVITY:
-      return { ...state, activities: [...state.activities, action.payload.activity] };
+      // eslint-disable-next-line max-len
+      return { ...state, activities: action.payload.activities, selectedActivity: action.payload.selectedActivity };
     // case REMOVE_CART:
     //   const cart = state.filter((_item, i) => action.payload.cartIttemIndex !== i);
     //   return { ...state, cart };
@@ -56,11 +58,14 @@ export function retrieveActivityAction(activities) {
     },
   };
 }
-export function createActivityAction(activity) {
+export function createActivityAction(data) {
+  const { activities } = data;
+  const selectedActivity = data.newActivityDetails;
   return {
     type: CREATE_ACTIVITY,
     payload: {
-      activity,
+      activities,
+      selectedActivity,
     },
   };
 }
@@ -121,8 +126,10 @@ export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
     axios.post(`${BACKEND_URL}/activities`, activity)
       .then((result) => {
-        dispatch(createActivityAction(result.data.newActivity));
-        resolve(result.data.newActivity.id);
+        // add the new activity as the selected activity and update the activities in store
+        dispatch(createActivityAction(result.data));
+
+        resolve(result.data.newActivityDetails.id);
       })
       .catch((error) => {
         console.log('create activity error', error);
