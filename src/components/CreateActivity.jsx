@@ -22,7 +22,7 @@ export default function CreateActivityComponent() {
   const { dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
-    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '1', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
+    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
 
   // create a hook to use when the logic says to change components
@@ -124,7 +124,7 @@ export default function CreateActivityComponent() {
                 <Col>
                   <Form.Group controlId="category">
                     <Form.Label>Category</Form.Label>
-                    <Form.Control required as="select" value={newActivity.gender} onChange={(e) => setNewActivity({ ...newActivity, categoryId: e.target.value })}>
+                    <Form.Control required as="select" value={newActivity.categoryId} onChange={(e) => setNewActivity({ ...newActivity, categoryId: e.target.value })}>
                       {categoryOptions}
                     </Form.Control>
                   </Form.Group>
