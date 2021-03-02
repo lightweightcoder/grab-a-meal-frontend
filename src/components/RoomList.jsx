@@ -18,6 +18,7 @@ function RoomList() {
   const [showLoading, setShowLoading] = useState(true);
   const [email, setEmail] = useState('');
   const history = useHistory();
+  // helper function that returns back data to our app
   const snapshotToArray = (snapshot) => {
     const returnArr = [];
 
@@ -33,8 +34,11 @@ function RoomList() {
     const fetchData = async () => {
       setEmail(localStorage.getItem('email'));
       firebase.database().ref('rooms/').on('value', (resp) => {
-        setRoom([]);
+        console.log(resp);
+        console.log(resp.val(), 'val');
+        // setRoom([]);
         setRoom(snapshotToArray(resp));
+        console.log(room);
         setShowLoading(false);
       });
     };
@@ -44,17 +48,18 @@ function RoomList() {
 
   // send data that contain enter room status to Firebase DB
   const enterChatRoom = (roomname) => {
+    // Welcome/Entry message for chat room. e.g "So and so joined the room"
     const chat = {
       roomname: '', email: '', message: '', date: '', type: '',
     };
     chat.roomname = roomname;
     chat.email = email;
     chat.date = Moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
-    chat.message = `${email} enter the room`;
+    chat.message = `${email} enter the room `;
     chat.type = 'join';
     const newMessage = firebase.database().ref('chats/').push();
     newMessage.set(chat);
-
+    // Retrieve roomusers table and query DB to find if user exist
     firebase.database().ref('roomusers/').orderByChild('roomname').equalTo(roomname)
       .on('value', (resp) => {
         let roomuser = [];
@@ -76,7 +81,7 @@ function RoomList() {
     history.push(`/chatroom/${roomname}`);
   };
   const logout = () => {
-    localStorage.removeItem('nickname');
+    localStorage.removeItem('email');
     history.push('/login');
   };
   return (

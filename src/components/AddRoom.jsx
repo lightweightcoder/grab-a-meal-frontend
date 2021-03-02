@@ -19,6 +19,7 @@ function AddRoom() {
   const history = useHistory();
   const [room, setRoom] = useState({ roomname: '' });
   const [showLoading, setShowLoading] = useState(false);
+  // if the rooms table exist in Firebase Database, it will just return, if not it will create.
   const ref = firebase.database().ref('rooms/');
   // Add a function to save the room data to the Firebase realtime-database.
   const save = (e) => {
@@ -38,7 +39,10 @@ function AddRoom() {
       newRoom.set(room);
       history.goBack();
       setShowLoading(false);
-      return 1;
+      return (
+        <>
+        </>
+      );
     });
   };
   // Add a function to handle the input value changes.

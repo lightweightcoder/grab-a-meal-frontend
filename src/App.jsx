@@ -17,6 +17,7 @@ import { AppProvider } from './store.jsx';
 // import AddRoom from './components/AddRoom.jsx';
 // import ChatRoom from './components/ChatRoom.jsx';
 import Messages from './components/Messages.jsx';
+import Messages2 from './components/Messages2.jsx';
 
 function App() {
   // const location = useLocation();
@@ -35,6 +36,7 @@ function App() {
             <Route path="/home" component={HomeComponent} />
             <Route path="/profile" component="" />
             <Route path="/messages" component={Messages} />
+            <Route path="/messages2" component={Messages2} />
             <Route path="/logout" component="" />
             <Route path="/activities/new" component={CreateActivityComponent} />
             <Route path="/login">

@@ -25,6 +25,9 @@ export default function NavbarComponent() {
             <LinkContainer to="/messages">
               <Nav.Link>Messages</Nav.Link>
             </LinkContainer>
+            <LinkContainer to="/messages2">
+              <Nav.Link>Messages2</Nav.Link>
+            </LinkContainer>
             <LinkContainer to="/logout">
               <Nav.Link>Logout</Nav.Link>
             </LinkContainer>
