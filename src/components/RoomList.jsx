@@ -36,7 +36,7 @@ function RoomList() {
       firebase.database().ref('rooms/').on('value', (resp) => {
         console.log(resp);
         console.log(resp.val(), 'val');
-        // setRoom([]);
+        setRoom([]);
         setRoom(snapshotToArray(resp));
         console.log(room);
         setShowLoading(false);
