@@ -23,7 +23,9 @@ import './Message.css';
 
 axios.defaults.withCredentials = false;
 
-export default function ConversationList({ conversationTitles, setConversationTitles, showLoading }) {
+export default function ConversationList({
+  conversationTitles, sendConversationTitles, value, onClick, roomName, setRoomName,
+}) {
   // send data that contain enter conversations status to Firebase DB
   // const enterChatRoom = (roomname) => {
   //   // Welcome/Entry message for chat conversations. e.g "So and so joined the conversations"
@@ -62,8 +64,12 @@ export default function ConversationList({ conversationTitles, setConversationTi
   const convoListJsx = () => {
     const convoList = conversationTitles.map((convo, i) => (
       <div key={convo.roomname}>
+        {console.log(convo)}
         <ConversationListItem
           title={convo.roomname}
+          value={i}
+          roomName={roomName}
+          setRoomName={setRoomName}
         />
       </div>
     ));
@@ -73,7 +79,6 @@ export default function ConversationList({ conversationTitles, setConversationTi
     <div>
       <div className="conversations-list">
         {convoListJsx()}
-        {/* {console.log(conversationTitles)} */}
         {/* <Toolbar
         title="Messenger"
         leftItems={[

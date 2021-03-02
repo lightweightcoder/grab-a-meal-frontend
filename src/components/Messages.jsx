@@ -21,6 +21,7 @@ import firebase from '../Firebase.js';
 export default function Messages() {
   // const location = useLocation();
   const [conversationTitles, setConversationTitles] = useState([]);
+  const [roomName, setRoomName] = useState('');
   const [name, setName] = useState('');
   const [showLoading, setShowLoading] = useState(true);
   const [email, setEmail] = useState('');
@@ -46,16 +47,21 @@ export default function Messages() {
         setConversationTitles([]);
         setConversationTitles(snapshotToTitleArray(resp));
         setShowLoading(false);
+        const currentRoomName = snapshotToTitleArray(resp)[0].roomname;
+        setRoomName(currentRoomName);
       });
     };
     fetchMessageTitleData();
   }, []);
+
   return (
     <div className="messenger">
       <div className="scrollable sidebar">
         <ConversationList
-          setConversationsTitle={setConversationTitles}
+          sendConversationsTitle={setConversationTitles}
           conversationTitles={conversationTitles}
+          roomName={roomName}
+          setRoomName={setRoomName}
           showLoading={showLoading}
         />
       </div>
@@ -66,6 +72,8 @@ export default function Messages() {
               <MessageList
                 conversationTitles={conversationTitles}
                 setConversationsTitle={setConversationTitles}
+                roomName={roomName}
+                setRoomName={setRoomName}
                 showLoading={showLoading}
                 setShowLoading={setShowLoading}
               />

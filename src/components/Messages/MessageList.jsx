@@ -16,7 +16,7 @@ import './Message.css';
 const MY_USER_ID = 'apple';
 
 export default function MessageList({
-  conversationTitles, setConversationsTitles, showLoading, setShowLoading,
+  conversationTitles, setConversationsTitles, showLoading, setShowLoading, roomName, setRoomName,
 }) {
   // const [messages, setMessages] = useState([]);
   const [email, setEmail] = useState('');
@@ -38,10 +38,11 @@ export default function MessageList({
     return returnArr;
   };
   // Retrieval from Firebase: Message Content
+  const convoTitle = conversationTitles[0].roomname;
   useEffect(() => {
     const fetchData = async () => {
       setEmail(localStorage.getItem('email'));
-      firebase.database().ref('chats/').orderByChild('roomname').equalTo(conversationTitles[0].roomname)
+      firebase.database().ref('chats/').orderByChild('roomname').equalTo(roomName)
         .on('value', (resp) => {
           setChats([]);
           setChats(snapshotToArray(resp));
@@ -50,7 +51,7 @@ export default function MessageList({
     };
 
     fetchData();
-  }, [conversationTitles]);
+  }, [roomName]);
 
   const renderMessages = () => {
     let i = 0;
