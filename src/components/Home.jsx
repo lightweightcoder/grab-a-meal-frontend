@@ -17,6 +17,7 @@ import {
   retrieveActivities,
   joinActivity,
   editActivity,
+  leaveActivity,
 } from '../store.jsx';
 
 export default function HomeComponent() {
@@ -180,6 +181,23 @@ export default function HomeComponent() {
     });
   };
 
+  // handle when user clicks on leave activity button
+  const handleLeaveActivityBtnClick = () => {
+    // make an axios delete request to remove the participant from the activity in the database
+    leaveActivity(dispatch, activityDetails.id).then((result) => {
+      // if there was an error redirect user to login
+      if (result.error) {
+        history.push('/login');
+        return;
+      }
+
+      // close the display of the modal that shows the activity details
+      setdisplayCardDetails(false);
+      // set the modal to show the activity details next time it opens
+      setEditOrViewActivity('VIEW');
+    });
+  };
+
   // function that returns a modal containing details of the selected activity
   const cardSelectionModal = () => {
     // get the userId from the browser cookie
@@ -206,7 +224,7 @@ export default function HomeComponent() {
         userActionsButtons = (
           <>
             <Button variant="primary">Chat</Button>
-            <Button variant="danger">Leave</Button>
+            <Button variant="danger" onClick={handleLeaveActivityBtnClick}>Leave</Button>
           </>
         );
       } else {

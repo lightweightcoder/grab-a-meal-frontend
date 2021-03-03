@@ -1,5 +1,4 @@
 import React, { useState, useReducer, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -38,19 +37,6 @@ export function appReducer(state, action) {
   }
 }
 
-// The following action-generating functions are commonly referred to
-// as "action creators". They accept any input relevant to the action,
-// and return an object that represents that action, which is typically
-// passed to the dispatch function. Actions always contain a type attribute
-// used to identify the action and tell the reducer what logic to run.
-// export function addCartAction(item) {
-//   return {
-//     type: ADD_CART,
-//     payload: {
-//       item,
-//     },
-//   };
-// }
 export function retrieveActivityAction(activities) {
   return {
     type: RETRIEVE_ACTIVITY,
@@ -132,6 +118,7 @@ export function retrieveActivities(dispatch) {
   });
 }
 
+// allow a user to create an activity
 export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
     axios.post(`${BACKEND_URL}/activities`, activity, { withCredentials: true })
@@ -195,6 +182,32 @@ export function editActivity(dispatch, activity) {
     })
     .catch((error) => {
       console.log('join activity error', error);
+
+      // redirect user to login page as user tried to access a forbidden page
+      if (error.message === 'Request failed with status code 403') {
+        console.log('forbidden error');
+        return { error: true };
+      }
+
+      return { error: true };
+    });
+}
+
+// allow the user to leave an activity
+export function leaveActivity(dispatch, activityId) {
+  // make an axios delete request to remove the participant from the activity in the database
+  return axios.delete(`${BACKEND_URL}/activities/${activityId}/participants`, { withCredentials: true })
+    .then((result) => {
+      // update the store in AppProvider with the updated activities (and its participants)
+      dispatch(retrieveActivityAction(result.data.activities));
+
+      // return an object that contains anything to prevent
+      // TypeError: Cannot read property 'error' of undefined
+      // in Home.jsx from occuring
+      return { error: false };
+    })
+    .catch((error) => {
+      console.log('leave activity error', error);
 
       // redirect user to login page as user tried to access a forbidden page
       if (error.message === 'Request failed with status code 403') {
