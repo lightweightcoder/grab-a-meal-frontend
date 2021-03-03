@@ -220,7 +220,7 @@ export default function HomeComponent() {
             <Modal.Title>{activityDetails.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Description:
+            Description
             {' '}
             {activityDetails.description}
             <br />
