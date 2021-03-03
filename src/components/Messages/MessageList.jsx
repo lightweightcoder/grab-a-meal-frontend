@@ -62,7 +62,7 @@ export default function MessageList({
       const previous = chats[i - 1];
       const current = chats[i];
       const next = chats[i + 1];
-      const isMine = current.author === MY_USER_ID;
+      const isMine = true;
       const currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
