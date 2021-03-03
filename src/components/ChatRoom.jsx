@@ -17,7 +17,7 @@ import {
   InputGroupAddon,
 } from 'reactstrap';
 import Moment from 'moment';
-import ScrollToBottom from 'react-scroll-to-bottom';
+// import ScrollToBottom from 'react-scroll-to-bottom';
 import firebase from '../Firebase.js';
 import './Chatroom.css';
 
@@ -146,7 +146,7 @@ function ChatRoom() {
             </div>
           </Col>
           <Col xs="8">
-            <ScrollToBottom className="ChatContent">
+            <div className="ChatContent">
               {chats.map((item, idx) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <div key={idx} className="MessageBox">
@@ -174,7 +174,7 @@ function ChatRoom() {
                     )}
                 </div>
               ))}
-            </ScrollToBottom>
+            </div>
             <footer className="StickyFooter">
               <Form className="MessageForm" onSubmit={submitMessage}>
                 <InputGroup>
