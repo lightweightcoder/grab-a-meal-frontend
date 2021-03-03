@@ -7,7 +7,9 @@ import {
 import DateTimePicker from 'react-datetime-picker';
 import '../component-stylesheets/CreateActivity.css';
 
-import { categoryOptions, numOfParticipantsOptions } from '../utilities/activityForm.jsx';
+import {
+  categoryOptions, numOfParticipantsOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
+} from '../utilities/activityForm.jsx';
 
 // import all the appropriate functions
 import {
@@ -46,10 +48,9 @@ export default function CreateActivityComponent() {
   // handle when user changes the usual price
   const handleUsualPriceChange = (e) => {
     // change the usual price to 2 decimal places
-    const usualPrice = Math.round(Number(e.target.value) * 100) / 100;
+    const usualPrice = numToTwoDecimalPlace(e.target.value);
 
-    // eslint-disable-next-line max-len
-    const percentageDiscount = Math.round(((Number(usualPrice) - Number(newActivity.discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(usualPrice, newActivity.discountedPrice);
 
     setNewActivity({ ...newActivity, usualPrice, percentageDiscount });
   };
@@ -57,9 +58,9 @@ export default function CreateActivityComponent() {
   // handle when user changes the discounted price
   const handleDiscountedPriceChange = (e) => {
     // change the discounted price to 2 decimal places
-    const discountedPrice = Math.round(Number(e.target.value) * 100) / 100;
+    const discountedPrice = numToTwoDecimalPlace(e.target.value);
 
-    const percentageDiscount = Math.round(((Number(newActivity.usualPrice) - Number(discountedPrice)) / Number(newActivity.usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(newActivity.usualPrice, discountedPrice);
 
     setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
   };
@@ -67,10 +68,10 @@ export default function CreateActivityComponent() {
   // handle when user changes the discount percentage
   const handlePercentageDiscountChange = (e) => {
     // change the percentage discounted to 2 decimal places
-    const percentageDiscount = Math.round(Number(e.target.value) * 100) / 100;
+    const percentageDiscount = numToTwoDecimalPlace(e.target.value);
 
     // calculate the new discounted price
-    const discountedPrice = Math.round(Number(newActivity.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
+    const discountedPrice = getDiscountedPrice(newActivity.usualPrice, percentageDiscount);
 
     setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
   };

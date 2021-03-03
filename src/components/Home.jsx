@@ -9,7 +9,9 @@ import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import CardComponent from './Card.jsx';
 import './Home.css';
-import { categoryOptions } from '../utilities/activityForm.jsx';
+import {
+  categoryOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
+} from '../utilities/activityForm.jsx';
 import {
   AppContext,
   retrieveActivities,
@@ -99,7 +101,8 @@ export default function HomeComponent() {
     } = activityDetails;
 
     // calculate the percentage discount
-    const percentageDiscount = Math.round(((Number(usualPrice) - Number(discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    // const percentageDiscount = Math.round(((Number(usualPrice) - Number(discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(usualPrice, discountedPrice);
 
     // set the state to fill up the form with the selected activity details
     setEditedActivityDetails({
@@ -110,9 +113,10 @@ export default function HomeComponent() {
   // handle when user changes the usual price
   const handleUsualPriceChange = (e) => {
     // change the usual price to 2 decimal places
-    const usualPrice = Math.round(Number(e.target.value) * 100) / 100;
+    const usualPrice = numToTwoDecimalPlace(e.target.value);
 
-    const percentageDiscount = Math.round(((Number(usualPrice) - Number(editedActivityDetails.discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    // const percentageDiscount = Math.round(((Number(usualPrice) - Number(editedActivityDetails.discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(usualPrice, editedActivityDetails.discountedPrice);
 
     setEditedActivityDetails({ ...editedActivityDetails, usualPrice, percentageDiscount });
   };
@@ -120,9 +124,10 @@ export default function HomeComponent() {
   // handle when user changes the discounted price
   const handleDiscountedPriceChange = (e) => {
     // change the discounted price to 2 decimal places
-    const discountedPrice = Math.round(Number(e.target.value) * 100) / 100;
+    const discountedPrice = numToTwoDecimalPlace(e.target.value);
 
-    const percentageDiscount = Math.round(((Number(editedActivityDetails.usualPrice) - Number(discountedPrice)) / Number(editedActivityDetails.usualPrice)) * 10000) / 100;
+    // const percentageDiscount = Math.round(((Number(editedActivityDetails.usualPrice) - Number(discountedPrice)) / Number(editedActivityDetails.usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(editedActivityDetails.usualPrice, discountedPrice);
 
     setEditedActivityDetails({ ...editedActivityDetails, discountedPrice, percentageDiscount });
   };
@@ -130,10 +135,11 @@ export default function HomeComponent() {
   // handle when user changes the discount percentage
   const handlePercentageDiscountChange = (e) => {
     // change the percentage discounted to 2 decimal places
-    const percentageDiscount = Math.round(Number(e.target.value) * 100) / 100;
+    const percentageDiscount = numToTwoDecimalPlace(e.target.value);
 
     // calculate the new discounted price
-    const discountedPrice = Math.round(Number(editedActivityDetails.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
+    // const discountedPrice = Math.round(Number(editedActivityDetails.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
+    const discountedPrice = getDiscountedPrice(editedActivityDetails.usualPrice, percentageDiscount);
 
     setEditedActivityDetails({ ...editedActivityDetails, discountedPrice, percentageDiscount });
   };
