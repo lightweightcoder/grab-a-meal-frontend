@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
   useLocation,
+  useHistory,
 } from 'react-router-dom';
 import {
   Jumbotron,
@@ -13,12 +14,15 @@ import {
   ListGroupItem,
   Button,
 } from 'reactstrap';
+import { useCookies } from 'react-cookie';
 import ConversationList from './Messages/ConversationList.jsx';
 import MessageList from './Messages/MessageList.jsx';
 import './Messages/Message.css';
 import firebase from '../Firebase.js';
 
 export default function Messages() {
+  // set the current cookies (stored in the browser) in the cookies state
+  const [cookies] = useCookies([]);
   // const location = useLocation();
   const [conversationTitles, setConversationTitles] = useState([]);
   const [roomName, setRoomName] = useState('');
@@ -39,7 +43,14 @@ export default function Messages() {
 
     return returnTitleArr;
   };
+  // create a hook to use when the logic says to change components
+  const history = useHistory();
+
   useEffect(() => {
+    if (!cookies.userId) {
+      // if user is not logged in redirect to login page
+      history.push('/login');
+    }
     const fetchMessageTitleData = async () => {
       setEmail(localStorage.getItem('email'));
       firebase.database().ref('rooms/').on('value', (resp) => {
