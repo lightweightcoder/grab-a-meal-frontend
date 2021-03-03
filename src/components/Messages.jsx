@@ -23,6 +23,7 @@ export default function Messages() {
   const [conversationTitles, setConversationTitles] = useState([]);
   const [roomName, setRoomName] = useState('');
   const [name, setName] = useState('');
+  // showLoading is necessary for the conversationTitle to load before getting the messages
   const [showLoading, setShowLoading] = useState(true);
   const [email, setEmail] = useState('');
   // Retrieval from FireBase: Activity Message Title

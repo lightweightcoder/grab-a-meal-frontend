@@ -8,18 +8,20 @@ import {
   useHistory,
   useParams,
 } from 'react-router-dom';
+import {
+  InputGroup, InputGroupAddon, Button, Input, Form,
+} from 'reactstrap';
 import MessageChat from './MessageChat.jsx';
 import firebase from '../../Firebase.js';
 
 import './Message.css';
-
-const MY_USER_ID = 'apple';
 
 export default function MessageList({
   conversationTitles, setConversationsTitles, showLoading, setShowLoading, roomName, setRoomName,
 }) {
   // const [messages, setMessages] = useState([]);
   const [email, setEmail] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
   const [chats, setChats] = useState([]);
   const [newChat, setNewChat] = useState({
     roomname: '', email: '', message: '', date: '', type: '',
@@ -46,12 +48,28 @@ export default function MessageList({
         .on('value', (resp) => {
           setChats([]);
           setChats(snapshotToArray(resp));
-          console.log(chats);
+          // setSenderEmail()
         });
     };
 
     fetchData();
   }, [roomName]);
+  const onChange = (e) => {
+    setNewChat({ ...newChat, [e.target.name]: e.target.value });
+  };
+  const submitMessage = (e) => {
+    e.preventDefault();
+    const chat = newChat;
+    chat.roomname = roomName;
+    chat.email = email;
+    chat.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
+    chat.type = 'message';
+    const newMessage = firebase.database().ref('chats/').push();
+    newMessage.set(chat);
+    setNewChat({
+      roomname: '', email: '', message: '', date: '', type: '',
+    });
+  };
 
   const renderMessages = () => {
     let i = 0;
@@ -59,10 +77,11 @@ export default function MessageList({
     const tempMessages = [];
 
     while (i < messageCount) {
+      const currentEmail = chats[i].email;
       const previous = chats[i - 1];
       const current = chats[i];
       const next = chats[i + 1];
-      const isMine = true;
+      const isMine = currentEmail === email;
       const currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
@@ -125,12 +144,25 @@ export default function MessageList({
 
       <div className="message-list-container">{renderMessages()}</div>
       <div className="compose">
-        <input
-          type="text"
-          className="compose-input"
-          placeholder="Type a message, @name"
-        />
+        <div className="col-12">
+          <Form onSubmit={submitMessage}>
+            <InputGroup>
+              <Input
+                type="text"
+                name="message"
+                className="compose-input"
+                placeholder="Type a message..."
+                value={newChat.message}
+                onChange={onChange}
+              />
+              <InputGroupAddon addonType="append">
+                <button className="toolbar-button" type="submit"> Send </button>
+              </InputGroupAddon>
+            </InputGroup>
+          </Form>
+        </div>
       </div>
     </div>
+
   );
 }
