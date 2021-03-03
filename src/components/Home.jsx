@@ -14,6 +14,7 @@ import {
   AppContext,
   retrieveActivities,
   joinActivity,
+  editActivity,
 } from '../store.jsx';
 
 export default function HomeComponent() {
@@ -135,6 +136,37 @@ export default function HomeComponent() {
     const discountedPrice = Math.round(Number(editedActivityDetails.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
 
     setEditedActivityDetails({ ...editedActivityDetails, discountedPrice, percentageDiscount });
+  };
+
+  // handle when user clicks on the button to save edits to an activity
+  const handleSaveChanges = () => {
+    // make an axios put request to update an activity in the database
+    editActivity(dispatch, editedActivityDetails).then((result) => {
+      // if there was an error redirect user to login
+      if (result.error) {
+        history.push('/login');
+        return;
+      }
+
+      // get the updated activity
+      const { updatedActivity } = result;
+
+      // update the activity details state with the changed fields
+      setActivityDetails({
+        ...activityDetails,
+        id: updatedActivity.id,
+        name: updatedActivity.name,
+        description: updatedActivity.description,
+        dateTime: updatedActivity.dateTime,
+        totalNumOfParticipants: updatedActivity.totalNumOfParticipants,
+        location: updatedActivity.location,
+        usualPrice: updatedActivity.usualPrice,
+        discountedPrice: updatedActivity.discountedPrice,
+      });
+
+      // display the modal that shows the activity details
+      setEditOrViewActivity('VIEW');
+    });
   };
 
   // function that returns a modal containing details of the selected activity
@@ -298,7 +330,7 @@ export default function HomeComponent() {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="success" onClick={handleJoinActivity(activityDetails.id)}> Save Changes </Button>
+            <Button variant="success" onClick={handleSaveChanges}> Save Changes </Button>
             <Button variant="secondary" onClick={handleDisplayClose}>
               Cancel
             </Button>

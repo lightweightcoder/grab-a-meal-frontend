@@ -154,10 +154,34 @@ export function joinActivity(dispatch, activityId) {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));
 
-      // return error is false to prevent
+      // return an object that contains anything to prevent
       // TypeError: Cannot read property 'error' of undefined
       // in Home.jsx from occuring
       return { error: false };
+    })
+    .catch((error) => {
+      console.log('join activity error', error);
+
+      // redirect user to login page as user tried to access a forbidden page
+      if (error.message === 'Request failed with status code 403') {
+        console.log('forbidden error');
+        return { error: true };
+      }
+
+      return { error: true };
+    });
+}
+
+// allow the user edit his/her activity
+export function editActivity(dispatch, activity) {
+  // update the activity in the DB
+  return axios.put(`${BACKEND_URL}/activities`, activity)
+    .then((result) => {
+      // update the store in AppProvider with the updated activities
+      dispatch(retrieveActivityAction(result.data.activities));
+
+      // return the updated activity details
+      return { updatedActivity: result.data.updatedActivity };
     })
     .catch((error) => {
       console.log('join activity error', error);
