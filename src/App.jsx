@@ -13,9 +13,6 @@ import RegistrationComponent from './components/Registration.jsx';
 import HomeComponent from './components/Home.jsx';
 import CreateActivityComponent from './components/CreateActivity.jsx';
 import { AppProvider } from './store.jsx';
-// import RoomList from './components/RoomList.jsx';
-// import AddRoom from './components/AddRoom.jsx';
-// import ChatRoom from './components/ChatRoom.jsx';
 import Messages from './components/Messages.jsx';
 
 function App() {
