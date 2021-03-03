@@ -18,6 +18,7 @@ import {
   joinActivity,
   editActivity,
   leaveActivity,
+  deleteActivity,
 } from '../store.jsx';
 
 export default function HomeComponent() {
@@ -198,6 +199,23 @@ export default function HomeComponent() {
     });
   };
 
+  // handle when user clicks on delete activity button
+  const handleDeleteActivityBtnClick = () => {
+    // make an axios delete request to cancel the activity in the database
+    deleteActivity(dispatch, activityDetails.id).then((result) => {
+      // if there was an error redirect user to login
+      if (result.error) {
+        history.push('/login');
+        return;
+      }
+
+      // close the display of the modal that shows the activity details
+      setdisplayCardDetails(false);
+      // set the modal to show an activity's details next time it opens
+      setEditOrViewActivity('VIEW');
+    });
+  };
+
   // function that returns a modal containing details of the selected activity
   const cardSelectionModal = () => {
     // get the userId from the browser cookie
@@ -216,7 +234,7 @@ export default function HomeComponent() {
           <>
             <Button variant="primary">Chat</Button>
             <Button variant="success" onClick={handleEditActivityBtnClick}>Edit</Button>
-            <Button variant="danger">Delete</Button>
+            <Button variant="danger" onClick={handleDeleteActivityBtnClick}>Delete</Button>
           </>
         );
       } else if (activityDetails.participants.find((el) => el.id === userId)) {

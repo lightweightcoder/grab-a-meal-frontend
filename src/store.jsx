@@ -218,3 +218,29 @@ export function leaveActivity(dispatch, activityId) {
       return { error: true };
     });
 }
+
+// allow the user to delete an activity
+export function deleteActivity(dispatch, activityId) {
+  // make an axios delete request to cancel the activity in the database
+  return axios.delete(`${BACKEND_URL}/activities/${activityId}`, { withCredentials: true })
+    .then((result) => {
+      // update the store in AppProvider with the updated activities (and its participants)
+      dispatch(retrieveActivityAction(result.data.activities));
+
+      // return an object that contains anything to prevent
+      // TypeError: Cannot read property 'error' of undefined
+      // in Home.jsx from occuring
+      return { error: false };
+    })
+    .catch((error) => {
+      console.log('delete activity error', error);
+
+      // redirect user to login page as user tried to access a forbidden page
+      if (error.message === 'Request failed with status code 403') {
+        console.log('forbidden error');
+        return { error: true };
+      }
+
+      return { error: true };
+    });
+}
