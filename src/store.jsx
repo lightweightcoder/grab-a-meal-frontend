@@ -175,7 +175,7 @@ export function joinActivity(dispatch, activityId) {
 // allow the user edit his/her activity
 export function editActivity(dispatch, activity) {
   // update the activity in the DB
-  return axios.put(`${BACKEND_URL}/activities`, activity)
+  return axios.put(`${BACKEND_URL}/activities/${activity.id}`, activity)
     .then((result) => {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));

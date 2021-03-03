@@ -36,7 +36,7 @@ export default function HomeComponent() {
     participants: [],
   });
   const [editedActivityDetails, setEditedActivityDetails] = useState({
-    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
+    id: '', name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
 
   // create a hook to use when the logic says to change components
@@ -95,7 +95,7 @@ export default function HomeComponent() {
 
     // get the current details of the activity
     const {
-      name, description, dateTime, totalNumOfParticipants, location, categoryId, usualPrice, discountedPrice,
+      id, name, description, dateTime, totalNumOfParticipants, location, categoryId, usualPrice, discountedPrice,
     } = activityDetails;
 
     // calculate the percentage discount
@@ -103,7 +103,7 @@ export default function HomeComponent() {
 
     // set the state to fill up the form with the selected activity details
     setEditedActivityDetails({
-      ...editedActivityDetails, name, description, dateTime, totalNumOfParticipants, location, categoryId, usualPrice, discountedPrice, percentageDiscount,
+      ...editedActivityDetails, id, name, description, dateTime, totalNumOfParticipants, location, categoryId, usualPrice, discountedPrice, percentageDiscount,
     });
   };
 
