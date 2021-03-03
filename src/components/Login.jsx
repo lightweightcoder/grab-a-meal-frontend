@@ -18,6 +18,8 @@ export default function Login() {
   // Firebase stuff
   const [creds, setCreds] = useState({ email: '' });
   // const [showLoading, setShowLoading] = useState(false);
+
+  // if the user table exist in Firebase Database, it will just return, if not it will create.
   const ref = firebase.database().ref('users/');
 
   const handleLogin = () => {
@@ -26,17 +28,17 @@ export default function Login() {
     ref.orderByChild('email').equalTo(creds.email).once('value', (snapshot) => {
       if (snapshot.exists()) {
         localStorage.setItem('email', creds.email);
-        history.push('/roomlist');
+        history.push('/home');
         // setShowLoading(false);
       } else {
         const newUser = firebase.database().ref('users/').push();
         newUser.set(creds);
         localStorage.setItem('email', creds.email);
-        history.push('/roomlist');
+        history.push('/home');
         // setShowLoading(false);
       }
     });
-    axios.post(`${BACKEND_URL}/login`, { email, password }).then((result) => {
+    axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((result) => {
       // if validation failed for login, display validation message
       if (result.data.invalidMessage) {
         console.log('invalid login found');
@@ -53,7 +55,7 @@ export default function Login() {
 
   const onEmailChange = (e) => {
     setEmail(e.target.value);
-    e.persist();
+    // e.persist(); we do not need this
     setCreds({ ...creds, [e.target.name]: e.target.value });
   };
   return (

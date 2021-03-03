@@ -1,4 +1,5 @@
 import React, { useState, useReducer, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -117,14 +118,23 @@ export function AppProvider({ children }) {
 export const BACKEND_URL = 'http://localhost:3004';
 
 export function retrieveActivities(dispatch) {
-  axios.get(`${BACKEND_URL}/activities`).then((result) => {
+  return axios.get(`${BACKEND_URL}/activities`, { withCredentials: true }).then((result) => {
     dispatch(retrieveActivityAction(result.data.activities));
+    return { error: false };
+  }).catch((error) => {
+    // redirect user to login page as user tried to access a forbidden page
+    if (error.message === 'Request failed with status code 403') {
+      console.log('forbidden error');
+      return { error: true };
+    }
+    console.log(error);
+    return { error: true };
   });
 }
 
 export function createActivity(dispatch, activity) {
   return new Promise((resolve, reject) => {
-    axios.post(`${BACKEND_URL}/activities`, activity)
+    axios.post(`${BACKEND_URL}/activities`, activity, { withCredentials: true })
       .then((result) => {
         // add the new activity as the selected activity and update the activities in store
         dispatch(createActivityAction(result.data));
@@ -149,7 +159,7 @@ export function createActivity(dispatch, activity) {
 export function joinActivity(dispatch, activityId) {
   // create a new entry in the activities_users table of the DB
   // i.e. the user is recorded as a participant of an activity
-  return axios.post(`${BACKEND_URL}/activities/${activityId}/participants`)
+  return axios.post(`${BACKEND_URL}/activities/${activityId}/participants`, { withCredentials: true })
     .then((result) => {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));
@@ -175,7 +185,7 @@ export function joinActivity(dispatch, activityId) {
 // allow the user edit his/her activity
 export function editActivity(dispatch, activity) {
   // update the activity in the DB
-  return axios.put(`${BACKEND_URL}/activities/${activity.id}`, activity)
+  return axios.put(`${BACKEND_URL}/activities/${activity.id}`, activity, { withCredentials: true })
     .then((result) => {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));

@@ -45,7 +45,12 @@ export default function HomeComponent() {
   const history = useHistory();
 
   useEffect(() => {
-    retrieveActivities(dispatch);
+    retrieveActivities(dispatch).then((result) => {
+      console.log(result);
+      if (result.error) {
+        history.push('/login');
+      }
+    });
   }, []);
 
   // update the state that stores the details of a selected activity and show the modal
@@ -220,7 +225,7 @@ export default function HomeComponent() {
             <Modal.Title>{activityDetails.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Description:
+            Description
             {' '}
             {activityDetails.description}
             <br />
