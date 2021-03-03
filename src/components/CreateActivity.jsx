@@ -7,7 +7,9 @@ import {
 import DateTimePicker from 'react-datetime-picker';
 import '../component-stylesheets/CreateActivity.css';
 
-import { categoryOptions, numOfParticipantsOptions } from '../utilities/activityForm.jsx';
+import {
+  categoryOptions, numOfParticipantsOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
+} from '../utilities/activityForm.jsx';
 
 // import all the appropriate functions
 import {
@@ -22,7 +24,7 @@ export default function CreateActivityComponent() {
   const { dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
-    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '1', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
+    name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
 
   // create a hook to use when the logic says to change components
@@ -46,10 +48,9 @@ export default function CreateActivityComponent() {
   // handle when user changes the usual price
   const handleUsualPriceChange = (e) => {
     // change the usual price to 2 decimal places
-    const usualPrice = Math.round(Number(e.target.value) * 100) / 100;
+    const usualPrice = numToTwoDecimalPlace(e.target.value);
 
-    // eslint-disable-next-line max-len
-    const percentageDiscount = Math.round(((Number(usualPrice) - Number(newActivity.discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(usualPrice, newActivity.discountedPrice);
 
     setNewActivity({ ...newActivity, usualPrice, percentageDiscount });
   };
@@ -57,9 +58,9 @@ export default function CreateActivityComponent() {
   // handle when user changes the discounted price
   const handleDiscountedPriceChange = (e) => {
     // change the discounted price to 2 decimal places
-    const discountedPrice = Math.round(Number(e.target.value) * 100) / 100;
+    const discountedPrice = numToTwoDecimalPlace(e.target.value);
 
-    const percentageDiscount = Math.round(((Number(newActivity.usualPrice) - Number(discountedPrice)) / Number(newActivity.usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(newActivity.usualPrice, discountedPrice);
 
     setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
   };
@@ -67,10 +68,10 @@ export default function CreateActivityComponent() {
   // handle when user changes the discount percentage
   const handlePercentageDiscountChange = (e) => {
     // change the percentage discounted to 2 decimal places
-    const percentageDiscount = Math.round(Number(e.target.value) * 100) / 100;
+    const percentageDiscount = numToTwoDecimalPlace(e.target.value);
 
     // calculate the new discounted price
-    const discountedPrice = Math.round(Number(newActivity.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
+    const discountedPrice = getDiscountedPrice(newActivity.usualPrice, percentageDiscount);
 
     setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
   };
@@ -124,7 +125,7 @@ export default function CreateActivityComponent() {
                 <Col>
                   <Form.Group controlId="category">
                     <Form.Label>Category</Form.Label>
-                    <Form.Control required as="select" value={newActivity.gender} onChange={(e) => setNewActivity({ ...newActivity, categoryId: e.target.value })}>
+                    <Form.Control required as="select" value={newActivity.categoryId} onChange={(e) => setNewActivity({ ...newActivity, categoryId: e.target.value })}>
                       {categoryOptions}
                     </Form.Control>
                   </Form.Group>
@@ -141,7 +142,7 @@ export default function CreateActivityComponent() {
               </Row>
 
               <Form.Group controlId="dateTime">
-                <Form.Label>Date and Time</Form.Label>
+                <Form.Label>Proposed Date and Time</Form.Label>
                 <br />
                 <DateTimePicker
                   onChange={(value) => setNewActivity({ ...newActivity, dateTime: value })}

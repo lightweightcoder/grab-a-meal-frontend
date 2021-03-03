@@ -1,14 +1,22 @@
+/* eslint-disable max-len */
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Modal, Button, ButtonGroup } from 'react-bootstrap';
+import {
+  Modal, Button, ButtonGroup, Form, Row, Col,
+} from 'react-bootstrap';
+import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import CardComponent from './Card.jsx';
 import './Home.css';
 import {
+  categoryOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
+} from '../utilities/activityForm.jsx';
+import {
   AppContext,
   retrieveActivities,
   joinActivity,
+  editActivity,
 } from '../store.jsx';
 
 export default function HomeComponent() {
@@ -28,6 +36,9 @@ export default function HomeComponent() {
     creatorId: '',
     creatorName: '',
     participants: [],
+  });
+  const [editedActivityDetails, setEditedActivityDetails] = useState({
+    id: '', name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
 
   // create a hook to use when the logic says to change components
@@ -51,13 +62,18 @@ export default function HomeComponent() {
       creatorId: activity.creatorId,
       creatorName: activity.creator.name,
       participants: activity.users,
+      usualPrice: activity.usualPrice,
+      discountedPrice: activity.discountedPrice,
     });
 
     setdisplayCardDetails(true);
   };
 
   const handleDisplayClose = () => {
+    // close the modal
     setdisplayCardDetails(false);
+    // set the modal to show activity details next time it opens
+    setEditOrViewActivity('VIEW');
   };
 
   // eslint-disable-next-line func-names
@@ -75,6 +91,91 @@ export default function HomeComponent() {
     });
   };
 
+  // handle to display a form to edit an activity's details
+  const handleEditActivityBtnClick = () => {
+    setEditOrViewActivity('EDIT');
+
+    // get the current details of the activity
+    const {
+      id, name, description, dateTime, totalNumOfParticipants, location, categoryId, usualPrice, discountedPrice,
+    } = activityDetails;
+
+    // calculate the percentage discount
+    // const percentageDiscount = Math.round(((Number(usualPrice) - Number(discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(usualPrice, discountedPrice);
+
+    // set the state to fill up the form with the selected activity details
+    setEditedActivityDetails({
+      ...editedActivityDetails, id, name, description, dateTime, totalNumOfParticipants, location, categoryId, usualPrice, discountedPrice, percentageDiscount,
+    });
+  };
+
+  // handle when user changes the usual price
+  const handleUsualPriceChange = (e) => {
+    // change the usual price to 2 decimal places
+    const usualPrice = numToTwoDecimalPlace(e.target.value);
+
+    // const percentageDiscount = Math.round(((Number(usualPrice) - Number(editedActivityDetails.discountedPrice)) / Number(usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(usualPrice, editedActivityDetails.discountedPrice);
+
+    setEditedActivityDetails({ ...editedActivityDetails, usualPrice, percentageDiscount });
+  };
+
+  // handle when user changes the discounted price
+  const handleDiscountedPriceChange = (e) => {
+    // change the discounted price to 2 decimal places
+    const discountedPrice = numToTwoDecimalPlace(e.target.value);
+
+    // const percentageDiscount = Math.round(((Number(editedActivityDetails.usualPrice) - Number(discountedPrice)) / Number(editedActivityDetails.usualPrice)) * 10000) / 100;
+    const percentageDiscount = getPercentageDiscount(editedActivityDetails.usualPrice, discountedPrice);
+
+    setEditedActivityDetails({ ...editedActivityDetails, discountedPrice, percentageDiscount });
+  };
+
+  // handle when user changes the discount percentage
+  const handlePercentageDiscountChange = (e) => {
+    // change the percentage discounted to 2 decimal places
+    const percentageDiscount = numToTwoDecimalPlace(e.target.value);
+
+    // calculate the new discounted price
+    // const discountedPrice = Math.round(Number(editedActivityDetails.usualPrice) * (1 - percentageDiscount / 100) * 100) / 100;
+    const discountedPrice = getDiscountedPrice(editedActivityDetails.usualPrice, percentageDiscount);
+
+    setEditedActivityDetails({ ...editedActivityDetails, discountedPrice, percentageDiscount });
+  };
+
+  // handle when user clicks on the button to save edits to an activity
+  const handleSaveChanges = () => {
+    // make an axios put request to update an activity in the database
+    editActivity(dispatch, editedActivityDetails).then((result) => {
+      // if there was an error redirect user to login
+      if (result.error) {
+        history.push('/login');
+        return;
+      }
+
+      // get the updated activity
+      const { updatedActivity } = result;
+
+      // update the activity details state with the changed fields
+      setActivityDetails({
+        ...activityDetails,
+        id: updatedActivity.id,
+        name: updatedActivity.name,
+        description: updatedActivity.description,
+        dateTime: updatedActivity.dateTime,
+        totalNumOfParticipants: updatedActivity.totalNumOfParticipants,
+        location: updatedActivity.location,
+        usualPrice: updatedActivity.usualPrice,
+        discountedPrice: updatedActivity.discountedPrice,
+      });
+
+      // display the modal that shows the activity details
+      setEditOrViewActivity('VIEW');
+    });
+  };
+
+  // function that returns a modal containing details of the selected activity
   const cardSelectionModal = () => {
     // get the userId from the browser cookie
     const userId = Number(cookies.userId);
@@ -91,7 +192,7 @@ export default function HomeComponent() {
         userActionsButtons = (
           <>
             <Button variant="primary">Chat</Button>
-            <Button variant="success">Edit</Button>
+            <Button variant="success" onClick={handleEditActivityBtnClick}>Edit</Button>
             <Button variant="danger">Delete</Button>
           </>
         );
@@ -127,7 +228,7 @@ export default function HomeComponent() {
             {' '}
             {activityDetails.location}
             <br />
-            Date:
+            Proposed Date:
             {' '}
             {moment(activityDetails.dateTime).format('ll')}
             <br />
@@ -150,19 +251,92 @@ export default function HomeComponent() {
     }
 
     if (editOrViewActivity === 'EDIT') {
+      const numOfParticipantsOptions = [];
+      // set the minimum number of participants
+      // to be the number of current participants in the activity
+      const minimumNumOfParticipants = activityDetails.participants.length;
+      for (let i = minimumNumOfParticipants; i < 11; i += 1) {
+        numOfParticipantsOptions.push(<option key={i} value={i}>{i}</option>);
+      }
+
       // return the form to edit activity details
       return (
-        <Modal show={displayCardDetails} onHide={handleDisplayClose}>
+        <Modal show={displayCardDetails} onHide={handleDisplayClose} size="lg">
           <Modal.Header closeButton>
-            <Modal.Title>{activityDetails.name}</Modal.Title>
+            <Modal.Title>Edit Activity</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            Event Organized By:
-            {' '}
-            {activityDetails.creatorName}
+          <Modal.Body className="edit-activity-modal-body">
+            <Form>
+              <Form.Group controlId="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control required type="text" placeholder="Pick a fun name!" value={editedActivityDetails.name} onChange={(e) => setEditedActivityDetails({ ...editedActivityDetails, name: e.target.value })} />
+              </Form.Group>
+
+              <Form.Group controlId="description">
+                <Form.Label>Description</Form.Label>
+                <Form.Control required type="text" value={editedActivityDetails.description} onChange={(e) => setEditedActivityDetails({ ...editedActivityDetails, description: e.target.value })} />
+              </Form.Group>
+
+              <Form.Group controlId="location">
+                <Form.Label>Location</Form.Label>
+                <Form.Control required type="text" value={editedActivityDetails.location} onChange={(e) => setEditedActivityDetails({ ...editedActivityDetails, location: e.target.value })} />
+              </Form.Group>
+
+              <Row>
+                <Col>
+                  <Form.Group controlId="usualPrice">
+                    <Form.Label>Usual Price($)</Form.Label>
+                    <Form.Control required type="number" value={editedActivityDetails.usualPrice} onChange={handleUsualPriceChange} />
+                  </Form.Group>
+                </Col>
+
+                <Col>
+                  <Form.Group controlId="discountedPrice">
+                    <Form.Label>Discounted Price($)</Form.Label>
+                    <Form.Control required type="number" value={editedActivityDetails.discountedPrice} onChange={handleDiscountedPriceChange} />
+                  </Form.Group>
+                </Col>
+
+                <Col>
+                  <Form.Group controlId="percentDiscount">
+                    <Form.Label>Discount(%)</Form.Label>
+                    <Form.Control required type="number" value={editedActivityDetails.percentageDiscount} onChange={handlePercentageDiscountChange} />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <Form.Group controlId="category">
+                    <Form.Label>Category</Form.Label>
+                    <Form.Control required as="select" value={editedActivityDetails.categoryId} onChange={(e) => setEditedActivityDetails({ ...editedActivityDetails, categoryId: e.target.value })}>
+                      {categoryOptions}
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+
+                <Col>
+                  <Form.Group controlId="totalNumOfParticipants">
+                    <Form.Label>No. of Participants</Form.Label>
+                    <Form.Control required as="select" value={editedActivityDetails.totalNumOfParticipants} onChange={(e) => setEditedActivityDetails({ ...editedActivityDetails, totalNumOfParticipants: e.target.value })}>
+                      {numOfParticipantsOptions}
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              <Form.Group controlId="dateTime">
+                <Form.Label>Proposed Date and Time</Form.Label>
+                <br />
+                <DateTimePicker
+                  onChange={(value) => setEditedActivityDetails({ ...editedActivityDetails, dateTime: value })}
+                  value={new Date(editedActivityDetails.dateTime)}
+                />
+              </Form.Group>
+            </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="success" onClick={handleJoinActivity(activityDetails.id)}> Save Changes </Button>
+            <Button variant="success" onClick={handleSaveChanges}> Save Changes </Button>
             <Button variant="secondary" onClick={handleDisplayClose}>
               Cancel
             </Button>
