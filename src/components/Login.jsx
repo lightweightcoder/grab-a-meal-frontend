@@ -38,7 +38,7 @@ export default function Login() {
         // setShowLoading(false);
       }
     });
-    axios.post(`${BACKEND_URL}/login`, { email, password }).then((result) => {
+    axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((result) => {
       // if validation failed for login, display validation message
       if (result.data.invalidMessage) {
         console.log('invalid login found');
