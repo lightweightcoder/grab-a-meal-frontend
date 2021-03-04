@@ -1,14 +1,17 @@
 import '../component-stylesheets/Login.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Form, Button, Row, Col,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import { BACKEND_URL } from '../store.jsx';
 import firebase from '../Firebase.js';
 
 export default function Login() {
+  // set the current cookies (stored in the browser) in the cookies state
+  const [cookies] = useCookies([]);
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const [email, setEmail] = useState('');
@@ -58,6 +61,14 @@ export default function Login() {
     // e.persist(); we do not need this
     setCreds({ ...creds, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (cookies.userId) {
+      // if user is logged in redirect to home page
+      history.push('/home');
+    }
+  }, []);
+
   return (
     <>
       <Form className="login-form">
