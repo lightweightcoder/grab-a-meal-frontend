@@ -43,16 +43,28 @@ export default function CreateActivityComponent() {
         history.push('/login');
         return;
       }
-      console.log(store);
-      const activityId = store.selectedActivity.id;
-      const { creatorId } = store.selectedActivity;
-      console.log(newActivity.name);
-      ref.orderByChild('activity').equalTo(newActivity.name).once('value', (snapshot) => {
+      console.log(result.name);
+      const activityId = result.id;
+      // console.log(activityId, 'create activity');
+      const { creatorId } = result;
+      const userId = result.creatorId;
+      console.log(userId);
+      ref.orderByChild('activity').equalTo(result.name).once('value', (snapshot) => {
         if (snapshot.exists()) {
           console.log('error');
         }
         const newRoom = firebase.database().ref('rooms/').push();
-        newRoom.set({ roomname: newActivity.name, activityId, creatorId });
+        newRoom.set(
+          {
+            activityUsers: {
+              users: [userId],
+            },
+            activityId,
+            creatorId,
+            roomname: result.name,
+          },
+        );
+
         // localStorage.setItem('activityName', userNameData);
         // localStorage.setItem('userId', userIdData);
         // localStorage.setItem('email', creds.email);
