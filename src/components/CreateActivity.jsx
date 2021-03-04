@@ -16,19 +16,23 @@ import {
   AppContext,
   createActivity,
 } from '../store.jsx';
+import firebase from '../Firebase.js';
 
 export default function CreateActivityComponent() {
   // initialize the data from the context provider to obtain the
   // state and dispatch function from the value attribute
   // of the provider Higher Order Component in store.jsx
-  const { dispatch } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
     name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
+  // // state for firebase database creation
+  // const [newActivityRoom, setNewActivityroom] = useState({ activity: '' });
 
   // create a hook to use when the logic says to change components
   const history = useHistory();
+  const ref = firebase.database().ref('users/');
 
   // handle when user clicks on the 'submit' button to create an activity
   const handleCreateActivity = () => {
@@ -39,9 +43,23 @@ export default function CreateActivityComponent() {
         history.push('/login');
         return;
       }
-
+      console.log(store);
+      const activityId = store.selectedActivity.id;
+      const { creatorId } = store.selectedActivity;
+      console.log(newActivity.name);
+      ref.orderByChild('activity').equalTo(newActivity.name).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          console.log('error');
+        }
+        const newRoom = firebase.database().ref('rooms/').push();
+        newRoom.set({ roomname: newActivity.name, activityId, creatorId });
+        // localStorage.setItem('activityName', userNameData);
+        // localStorage.setItem('userId', userIdData);
+        // localStorage.setItem('email', creds.email);
+        // history.goBack();
+        history.push('/message');
+      });
       // take the user to the chat room of the newly created chat
-      history.push('/chats');
     });
   };
 

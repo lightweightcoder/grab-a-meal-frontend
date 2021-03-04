@@ -44,7 +44,6 @@ export default function Login() {
             localStorage.setItem('name', userNameData);
             localStorage.setItem('userId', userIdData);
             history.push('/home');
-            // setShowLoading(false);
           } else {
             const newUser = firebase.database().ref('users/').push();
             newUser.set({ name: userNameData, userid: userIdData, email: creds.email });
@@ -52,10 +51,8 @@ export default function Login() {
             localStorage.setItem('userId', userIdData);
             localStorage.setItem('email', creds.email);
             history.push('/home');
-            // setShowLoading(false);
           }
         });
-        // history.push('/home');
       }
     }).then((result) => {
       console.log(creds, 'creds');

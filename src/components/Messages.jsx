@@ -27,6 +27,7 @@ export default function Messages() {
   const [conversationTitles, setConversationTitles] = useState([]);
   const [roomName, setRoomName] = useState('');
   const [name, setName] = useState('');
+  const [userId, setUserId] = useState(null);
   // showLoading is necessary for the conversationTitle to load before getting the messages
   const [showLoading, setShowLoading] = useState(true);
   const [email, setEmail] = useState('');
@@ -53,15 +54,18 @@ export default function Messages() {
     }
     const fetchMessageTitleData = async () => {
       setEmail(localStorage.getItem('email'));
-      firebase.database().ref('rooms/').on('value', (resp) => {
+      setName(localStorage.getItem('name'));
+      setUserId(localStorage.getItem('userId'));
+      firebase.database().ref('rooms/').orderByChild('userid').equalTo(userId)
+        .on('value', (resp) => {
         // console.log(resp);
         // console.log(resp.val(), 'val');
-        setConversationTitles([]);
-        setConversationTitles(snapshotToTitleArray(resp));
-        setShowLoading(false);
-        const currentRoomName = snapshotToTitleArray(resp)[0].roomname;
-        setRoomName(currentRoomName);
-      });
+          setConversationTitles([]);
+          setConversationTitles(snapshotToTitleArray(resp));
+          setShowLoading(false);
+          const currentRoomName = snapshotToTitleArray(resp)[0].roomname;
+          setRoomName(currentRoomName);
+        });
     };
     fetchMessageTitleData();
   }, []);
@@ -81,14 +85,14 @@ export default function Messages() {
         : (
           <>
             <div className="scrollable content">
-              <MessageList
+              {/* <MessageList
                 conversationTitles={conversationTitles}
                 setConversationsTitle={setConversationTitles}
                 roomName={roomName}
                 setRoomName={setRoomName}
                 showLoading={showLoading}
                 setShowLoading={setShowLoading}
-              />
+              /> */}
             </div>
           </>
         )}

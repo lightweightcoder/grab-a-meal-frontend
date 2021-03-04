@@ -13,7 +13,6 @@ export default function ConversationListItem({
   });
   const handleConvoChange = () => {
     // console.log(convotitle[value].roomname);
-    console.log(title);
     setRoomName(title);
   };
   return (
