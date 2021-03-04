@@ -63,7 +63,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (cookies.userId) {
+    if (cookies.userId && cookies.loggedInHash) {
       // if user is logged in redirect to home page
       history.push('/home');
     }

@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
 import '../component-stylesheets/Register.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Form, Button, Row, Col,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import { BACKEND_URL } from '../store.jsx';
 
 export default function Register() {
@@ -17,6 +18,8 @@ export default function Register() {
 
   // create a hook to use when the logic says to change components
   const history = useHistory();
+  // set the current cookies (stored in the browser) in the cookies state
+  const [cookies] = useCookies([]);
 
   const handleRegister = (event) => {
     console.log('handle register');
@@ -44,6 +47,13 @@ export default function Register() {
       }
     });
   };
+
+  useEffect(() => {
+    if (cookies.userId && cookies.loggedInHash) {
+      // if user is logged in redirect to home page
+      history.push('/home');
+    }
+  }, []);
 
   return (
     <div className="registration-form-container">
