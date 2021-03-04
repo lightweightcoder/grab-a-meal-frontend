@@ -16,7 +16,7 @@ export default function Login() {
   const [invalidMessage, setInvalidMessage] = useState('');
 
   // Firebase stuff
-  const [creds, setCreds] = useState({ email: '' });
+  const [creds, setCreds] = useState({ email: '', name: '', userId: '' });
   // const [showLoading, setShowLoading] = useState(false);
 
   // if the user table exist in Firebase Database, it will just return, if not it will create.
@@ -25,19 +25,6 @@ export default function Login() {
   const handleLogin = () => {
     console.log('handle login');
 
-    ref.orderByChild('email').equalTo(creds.email).once('value', (snapshot) => {
-      if (snapshot.exists()) {
-        localStorage.setItem('email', creds.email);
-        history.push('/home');
-        // setShowLoading(false);
-      } else {
-        const newUser = firebase.database().ref('users/').push();
-        newUser.set(creds);
-        localStorage.setItem('email', creds.email);
-        history.push('/home');
-        // setShowLoading(false);
-      }
-    });
     axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((result) => {
       // if validation failed for login, display validation message
       if (result.data.invalidMessage) {
@@ -48,10 +35,31 @@ export default function Login() {
       // if user logged in successfully,
       if (result.data.loggedIn) {
         // take the user to home route
-        history.push('/home');
+        // console.log(result.data.userName);
+        const userIdData = result.data.userId;
+        const userNameData = result.data.userName;
+        ref.orderByChild('email').equalTo(creds.email).once('value', (snapshot) => {
+          if (snapshot.exists()) {
+            localStorage.setItem('email', creds.email);
+            localStorage.setItem('name', userNameData);
+            localStorage.setItem('userId', userIdData);
+            history.push('/home');
+            // setShowLoading(false);
+          } else {
+            const newUser = firebase.database().ref('users/').push();
+            newUser.set({ name: userNameData, userid: userIdData, email: creds.email });
+            localStorage.setItem('name', userNameData);
+            localStorage.setItem('userId', userIdData);
+            localStorage.setItem('email', creds.email);
+            history.push('/home');
+            // setShowLoading(false);
+          }
+        });
+        // history.push('/home');
       }
-    });
-  };
+    }).then((result) => {
+      console.log(creds, 'creds');
+    }); };
 
   const onEmailChange = (e) => {
     setEmail(e.target.value);

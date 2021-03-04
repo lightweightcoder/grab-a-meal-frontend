@@ -46,7 +46,6 @@ export default function HomeComponent() {
 
   useEffect(() => {
     retrieveActivities(dispatch).then((result) => {
-      console.log(result);
       if (result.error) {
         history.push('/login');
       }
@@ -357,7 +356,6 @@ export default function HomeComponent() {
   const activityDisplay = () => {
     const activityFeed = activities.map((activity) => (
       <div key={activity.id}>
-        {console.log(activity)}
         <CardComponent
           title={activity.name}
           date={moment(activity.dateTime).format('ll')}
