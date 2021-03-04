@@ -145,7 +145,7 @@ export function joinActivity(dispatch, activityId) {
     .then((result) => {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));
-      console.log(result.data);
+      console.log(result.data.activities, 'inside store');
       const activityData = result.data.activities;
       // return an object that contains anything to prevent
       // TypeError: Cannot read property 'error' of undefined

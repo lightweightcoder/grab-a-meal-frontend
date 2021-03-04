@@ -44,6 +44,7 @@ export default function MessageList({
 
   useEffect(() => {
     setName(localStorage.getItem('name'));
+    console.log('in use Effect of messageList');
     const fetchData = async () => {
       setEmail(localStorage.getItem('email'));
       setName(localStorage.getItem('name'));

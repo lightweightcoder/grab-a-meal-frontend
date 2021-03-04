@@ -43,7 +43,9 @@ export default function HomeComponent() {
   const [editedActivityDetails, setEditedActivityDetails] = useState({
     id: '', name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
-  const [roomKey, setRoomkey] = useState();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
   // create a hook to use when the logic says to change components
   const history = useHistory();
 
@@ -65,6 +67,8 @@ export default function HomeComponent() {
         history.push('/login');
       }
     });
+    setEmail(localStorage.getItem('email'));
+    setName(localStorage.getItem('name'));
   }, []);
 
   // update the state that stores the details of a selected activity and show the modal
@@ -105,15 +109,22 @@ export default function HomeComponent() {
         history.push('/login');
         return;
       }
-      // get key after firebase send back data
-      console.log(activityId);
-      // const fetchData = async () => {
+      const welcomeMessage = (currentRoomName) => {
+        const message = {
+          roomname: '', email: '', message: '', date: '',
+        };
+        message.roomname = currentRoomName;
+        message.email = email;
+        message.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
+        message.message = `${name} entered the ${currentRoomName} `;
+        const newMessage = firebase.database().ref('messages/').push();
+        newMessage.set(message);
+      };
 
-      // };
-      // fetchData();
       const fetchData = new Promise((resolve, reject) => {
         firebase.database().ref('rooms/').on('value', (resp) => {
           findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
+          welcomeMessage(findKey.roomname);
           resolve(1);
         });
       });
