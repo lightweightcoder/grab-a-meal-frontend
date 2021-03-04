@@ -56,7 +56,7 @@ export default function Messages() {
       setEmail(localStorage.getItem('email'));
       setName(localStorage.getItem('name'));
       setUserId(localStorage.getItem('userId'));
-      firebase.database().ref('rooms/').orderByChild('userid').equalTo(userId)
+      firebase.database().ref('rooms/').orderByChild('userId').equalTo(userId)
         .on('value', (resp) => {
         // console.log(resp);
         // console.log(resp.val(), 'val');
