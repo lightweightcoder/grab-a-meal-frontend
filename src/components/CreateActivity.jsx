@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Button, Form, Row, Col,
 } from 'react-bootstrap';
 import DateTimePicker from 'react-datetime-picker';
 import '../component-stylesheets/CreateActivity.css';
-
+import moment from 'moment';
 import {
   categoryOptions, numOfParticipantsOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
 } from '../utilities/activityForm.jsx';
@@ -16,22 +16,44 @@ import {
   AppContext,
   createActivity,
 } from '../store.jsx';
+import firebase from '../Firebase.js';
 
 export default function CreateActivityComponent() {
   // initialize the data from the context provider to obtain the
   // state and dispatch function from the value attribute
   // of the provider Higher Order Component in store.jsx
-  const { dispatch } = useContext(AppContext);
+  const { store, dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
     name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
+  // // state for firebase database creation
+  // const [newActivityRoom, setNewActivityroom] = useState({ activity: '' });
 
   // create a hook to use when the logic says to change components
   const history = useHistory();
-
+  const ref = firebase.database().ref('users/');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  useEffect(() => {
+    setEmail(localStorage.getItem('email'));
+    setName(localStorage.getItem('name'));
+  }, []);
   // handle when user clicks on the 'submit' button to create an activity
   const handleCreateActivity = () => {
+    // Welcome message
+    const welcomeMessage = (currentRoomName) => {
+      const message = {
+        roomname: '', email: '', message: '', date: '',
+      };
+      message.roomname = currentRoomName;
+      message.email = email;
+      message.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
+      message.message = `${name} created the ${currentRoomName} `;
+      const newMessage = firebase.database().ref('messages/').push();
+      newMessage.set(message);
+    };
+
     // make an axios post request to create an activity
     createActivity(dispatch, newActivity).then((result) => {
       // if there was an error redirect user to login
@@ -39,9 +61,29 @@ export default function CreateActivityComponent() {
         history.push('/login');
         return;
       }
-
+      const activityId = result.id;
+      const { creatorId } = result;
+      const userId = result.creatorId;
+      console.log(userId);
+      ref.orderByChild('activity').equalTo(result.name).once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          console.log('error');
+        }
+        const newRoom = firebase.database().ref('rooms/').push();
+        newRoom.set(
+          {
+            activityUsers: {
+              users: [userId],
+            },
+            activityId,
+            creatorId,
+            roomname: result.name,
+          },
+        );
+      });
+      welcomeMessage(result.name);
       // take the user to the chat room of the newly created chat
-      history.push('/chats');
+      history.push('/messages');
     });
   };
 

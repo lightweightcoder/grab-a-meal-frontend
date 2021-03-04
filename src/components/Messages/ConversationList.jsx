@@ -63,10 +63,9 @@ export default function ConversationList({
 
   const convoListJsx = () => {
     const convoList = conversationTitles.map((convo, i) => (
-      <div key={convo.roomname}>
-        {console.log(convo)}
+      <div key={convo[i]}>
         <ConversationListItem
-          title={convo.roomname}
+          title={convo}
           value={i}
           roomName={roomName}
           setRoomName={setRoomName}

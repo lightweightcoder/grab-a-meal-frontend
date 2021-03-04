@@ -27,6 +27,7 @@ export default function Messages() {
   const [conversationTitles, setConversationTitles] = useState([]);
   const [roomName, setRoomName] = useState('');
   const [name, setName] = useState('');
+  const [userId, setUserId] = useState(null);
   // showLoading is necessary for the conversationTitle to load before getting the messages
   const [showLoading, setShowLoading] = useState(true);
   const [email, setEmail] = useState('');
@@ -51,18 +52,29 @@ export default function Messages() {
       // if user is not logged in redirect to login page
       history.push('/login');
     }
+    let allChat;
     const fetchMessageTitleData = async () => {
       setEmail(localStorage.getItem('email'));
+      setName(localStorage.getItem('name'));
+      const userId = localStorage.getItem('userId');
       firebase.database().ref('rooms/').on('value', (resp) => {
-        // console.log(resp);
-        // console.log(resp.val(), 'val');
-        setConversationTitles([]);
-        setConversationTitles(snapshotToTitleArray(resp));
-        setShowLoading(false);
-        const currentRoomName = snapshotToTitleArray(resp)[0].roomname;
+        allChat = snapshotToTitleArray(resp);
+        // console.log(allChat[0].activityUsers.users)
+        const titlePresent = [];
+        allChat.forEach((chat) => {
+          const userIdPresent = chat.activityUsers.users.includes(Number(userId));
+          if (userIdPresent) {
+            titlePresent.push(chat.roomname);
+          }
+          return titlePresent;
+        });
+        setConversationTitles(titlePresent);
+        const currentRoomName = titlePresent[0];
         setRoomName(currentRoomName);
+        setShowLoading(false);
       });
     };
+
     fetchMessageTitleData();
   }, []);
 

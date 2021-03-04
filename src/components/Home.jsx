@@ -20,6 +20,7 @@ import {
   leaveActivity,
   deleteActivity,
 } from '../store.jsx';
+import firebase from '../Firebase.js';
 
 export default function HomeComponent() {
   // set the current cookies (stored in the browser) in the cookies state
@@ -42,13 +43,24 @@ export default function HomeComponent() {
   const [editedActivityDetails, setEditedActivityDetails] = useState({
     id: '', name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
-
+  const [roomKey, setRoomkey] = useState();
   // create a hook to use when the logic says to change components
   const history = useHistory();
 
+  const snapshotToArray = (snapshot) => {
+    const returnArr = [];
+
+    snapshot.forEach((childSnapshot) => {
+      const item = childSnapshot.val();
+      item.key = childSnapshot.key;
+      returnArr.push(item);
+    });
+
+    return returnArr;
+  };
+
   useEffect(() => {
     retrieveActivities(dispatch).then((result) => {
-      console.log(result);
       if (result.error) {
         history.push('/login');
       }
@@ -86,16 +98,38 @@ export default function HomeComponent() {
   // eslint-disable-next-line func-names
   const handleJoinActivity = (activityId) => function () {
     // make an axios get request to join an activity
+    let findKey;
     joinActivity(dispatch, activityId).then((result) => {
       // if there was an error redirect user to login
       if (result.error) {
         history.push('/login');
         return;
       }
+      // get key after firebase send back data
+      console.log(activityId);
+      // const fetchData = async () => {
 
-      // take the user to the chat room of the activity
-      history.push('/chats');
+      // };
+      // fetchData();
+      const fetchData = new Promise((resolve, reject) => {
+        firebase.database().ref('rooms/').on('value', (resp) => {
+          findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
+          resolve(1);
+        });
+      });
+      fetchData.then(() => {
+        const currentUserId = localStorage.getItem('userId');
+        const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
+        updateUserRef.once('value', (snapshot) => {
+          if (snapshot.exists()) {
+            const currentUsers = snapshot.val();
+            updateUserRef.set([...currentUsers, Number(currentUserId)]);
+          }
+        });
+      });
     });
+    // // take the user to the chat room of the activity
+    history.push('/messages');
   };
 
   // handle to display a form to edit an activity's details
@@ -393,7 +427,6 @@ export default function HomeComponent() {
   const activityDisplay = () => {
     const activityFeed = activities.map((activity) => (
       <div key={activity.id}>
-        {console.log(activity)}
         <CardComponent
           title={activity.name}
           date={moment(activity.dateTime).format('ll')}
