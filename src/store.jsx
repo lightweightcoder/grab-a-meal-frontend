@@ -15,9 +15,6 @@ export const initialState = {
 // data we defined above
 const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
 const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
-const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
-const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
-const LEAVE_ACTIVITY = 'LEAVE_ACTIVITY';
 const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
 const UPDATE_PROFILE = 'UPDATE_PROFILE';
 
@@ -29,9 +26,6 @@ export function appReducer(state, action) {
     case CREATE_ACTIVITY:
       // eslint-disable-next-line max-len
       return { ...state, activities: action.payload.activities, selectedActivity: action.payload.selectedActivity };
-    // case REMOVE_CART:
-    //   const cart = state.filter((_item, i) => action.payload.cartIttemIndex !== i);
-    //   return { ...state, cart };
     default:
       return state;
   }
