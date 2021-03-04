@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Button, Form, Row, Col,
 } from 'react-bootstrap';
 import DateTimePicker from 'react-datetime-picker';
 import '../component-stylesheets/CreateActivity.css';
-
+import moment from 'moment';
 import {
   categoryOptions, numOfParticipantsOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
 } from '../utilities/activityForm.jsx';
@@ -33,9 +33,27 @@ export default function CreateActivityComponent() {
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const ref = firebase.database().ref('users/');
-
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  useEffect(() => {
+    setEmail(localStorage.getItem('email'));
+    setName(localStorage.getItem('name'));
+  }, []);
   // handle when user clicks on the 'submit' button to create an activity
   const handleCreateActivity = () => {
+    // Welcome message
+    const welcomeMessage = (currentRoomName) => {
+      const message = {
+        roomname: '', email: '', message: '', date: '',
+      };
+      message.roomname = currentRoomName;
+      message.email = email;
+      message.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
+      message.message = `${name} created the ${currentRoomName} `;
+      const newMessage = firebase.database().ref('messages/').push();
+      newMessage.set(message);
+    };
+
     // make an axios post request to create an activity
     createActivity(dispatch, newActivity).then((result) => {
       // if there was an error redirect user to login
@@ -43,9 +61,7 @@ export default function CreateActivityComponent() {
         history.push('/login');
         return;
       }
-      console.log(result.name);
       const activityId = result.id;
-      // console.log(activityId, 'create activity');
       const { creatorId } = result;
       const userId = result.creatorId;
       console.log(userId);
@@ -64,14 +80,10 @@ export default function CreateActivityComponent() {
             roomname: result.name,
           },
         );
-
-        // localStorage.setItem('activityName', userNameData);
-        // localStorage.setItem('userId', userIdData);
-        // localStorage.setItem('email', creds.email);
-        // history.goBack();
-        history.push('/message');
       });
+      welcomeMessage(result.name);
       // take the user to the chat room of the newly created chat
+      history.push('/messages');
     });
   };
 

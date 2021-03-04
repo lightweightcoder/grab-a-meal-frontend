@@ -52,21 +52,29 @@ export default function Messages() {
       // if user is not logged in redirect to login page
       history.push('/login');
     }
+    let allChat;
     const fetchMessageTitleData = async () => {
       setEmail(localStorage.getItem('email'));
       setName(localStorage.getItem('name'));
-      setUserId(localStorage.getItem('userId'));
-      firebase.database().ref('rooms/').orderByChild('').equalTo(userId)
-        .on('value', (resp) => {
-        // console.log(resp);
-        // console.log(resp.val(), 'val');
-          setConversationTitles([]);
-          setConversationTitles(snapshotToTitleArray(resp));
-          setShowLoading(false);
-          const currentRoomName = snapshotToTitleArray(resp)[0].roomname;
-          setRoomName(currentRoomName);
+      const userId = localStorage.getItem('userId');
+      firebase.database().ref('rooms/').on('value', (resp) => {
+        allChat = snapshotToTitleArray(resp);
+        // console.log(allChat[0].activityUsers.users)
+        const titlePresent = [];
+        allChat.forEach((chat) => {
+          const userIdPresent = chat.activityUsers.users.includes(Number(userId));
+          if (userIdPresent) {
+            titlePresent.push(chat.roomname);
+          }
+          return titlePresent;
         });
+        setConversationTitles(titlePresent);
+        const currentRoomName = titlePresent[0];
+        setRoomName(currentRoomName);
+        setShowLoading(false);
+      });
     };
+
     fetchMessageTitleData();
   }, []);
 
@@ -85,14 +93,14 @@ export default function Messages() {
         : (
           <>
             <div className="scrollable content">
-              {/* <MessageList
+              <MessageList
                 conversationTitles={conversationTitles}
                 setConversationsTitle={setConversationTitles}
                 roomName={roomName}
                 setRoomName={setRoomName}
                 showLoading={showLoading}
                 setShowLoading={setShowLoading}
-              /> */}
+              />
             </div>
           </>
         )}

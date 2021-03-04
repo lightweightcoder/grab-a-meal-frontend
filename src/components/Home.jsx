@@ -129,7 +129,7 @@ export default function HomeComponent() {
       });
     });
     // // take the user to the chat room of the activity
-    history.push('/chats');
+    history.push('/messages');
   };
 
   // handle to display a form to edit an activity's details
