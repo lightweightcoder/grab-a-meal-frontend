@@ -34,9 +34,7 @@ function App() {
             <Route path="/messages" component={Messages} />
             <Route path="/logout" component="" />
             <Route path="/activities/new" component={CreateActivityComponent} />
-            <Route path="/login">
-              <LoginComponent />
-            </Route>
+            <Route path="/login" component={LoginComponent} />
             <Route path="/register" component={RegistrationComponent} />
             {/* <SecureRoute path="/roomlist">
               <RoomList />

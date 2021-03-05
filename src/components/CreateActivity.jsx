@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import {
   Button, Form, Row, Col,
 } from 'react-bootstrap';
@@ -19,6 +20,8 @@ import {
 import firebase from '../Firebase.js';
 
 export default function CreateActivityComponent() {
+  // set the current cookies (stored in the browser) in the cookies state
+  const [cookies] = useCookies([]);
   // initialize the data from the context provider to obtain the
   // state and dispatch function from the value attribute
   // of the provider Higher Order Component in store.jsx
@@ -117,6 +120,15 @@ export default function CreateActivityComponent() {
 
     setNewActivity({ ...newActivity, discountedPrice, percentageDiscount });
   };
+
+  // run this after component renders for the 1st time
+  useEffect(() => {
+    // if cookies has no userId, user is accessing this component illegally
+    if (!cookies.userId) {
+      // redirect to login page
+      history.push('/login');
+    }
+  }, []);
 
   return (
     <div className="container">

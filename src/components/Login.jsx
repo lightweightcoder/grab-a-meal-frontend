@@ -1,14 +1,19 @@
 import '../component-stylesheets/Login.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
   Form, Button, Row, Col,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { BACKEND_URL } from '../store.jsx';
+import { useCookies } from 'react-cookie';
+import { BACKEND_URL, AppContext, setLoggedInUserIdAction } from '../store.jsx';
 import firebase from '../Firebase.js';
 
 export default function Login() {
+  // set the current cookies (stored in the browser) in the cookies state
+  const [cookies] = useCookies([]);
+  // retrieve the store state variable and dispatch function from the App Context provider
+  const { store, dispatch } = useContext(AppContext);
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const [email, setEmail] = useState('');
@@ -33,7 +38,10 @@ export default function Login() {
       }
 
       // if user logged in successfully,
-      if (result.data.loggedIn) {
+      if (result.data.userId) {
+        // set the logged in user's id in the app provider
+        dispatch(setLoggedInUserIdAction(result.data.userId));
+
         // take the user to home route
         // console.log(result.data.userName);
         const userIdData = result.data.userId;
@@ -63,6 +71,15 @@ export default function Login() {
     // e.persist(); we do not need this
     setCreds({ ...creds, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    // if cookies has a userId, user is logged in
+    if (cookies.userId) {
+      // redirect to home page
+      history.push('/home');
+    }
+  }, []);
+
   return (
     <>
       <Form className="login-form">

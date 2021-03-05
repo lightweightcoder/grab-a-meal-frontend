@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 import '../component-stylesheets/Register.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
   Form, Button, Row, Col,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
-import { BACKEND_URL } from '../store.jsx';
+import { useCookies } from 'react-cookie';
+import { BACKEND_URL, AppContext, setLoggedInUserIdAction } from '../store.jsx';
 
 export default function Register() {
   const [formInputs, setformInputs] = useState({
@@ -17,6 +18,10 @@ export default function Register() {
 
   // create a hook to use when the logic says to change components
   const history = useHistory();
+  // set the current cookies (stored in the browser) in the cookies state
+  const [cookies] = useCookies([]);
+  // retrieve the store state variable and dispatch function from the App Context provider
+  const { store, dispatch } = useContext(AppContext);
 
   const handleRegister = (event) => {
     console.log('handle register');
@@ -30,7 +35,7 @@ export default function Register() {
 
     setValidated(true);
 
-    axios.post(`${BACKEND_URL}/register`, formInputs).then((result) => {
+    axios.post(`${BACKEND_URL}/register`, formInputs, { withCredentials: true }).then((result) => {
       // if validation failed for registration, display validation message
       if (result.data.invalidMessage) {
         console.log('invalid registration');
@@ -38,12 +43,22 @@ export default function Register() {
       }
 
       // if user registered successfully,
-      if (result.data.createdUser) {
+      if (result.data.userId) {
+        // set the logged in user's id in the app provider
+        dispatch(setLoggedInUserIdAction(result.data.userId));
+
         // take the user to home route
         history.push('/home');
       }
     });
   };
+
+  useEffect(() => {
+    if (cookies.userId && cookies.loggedInHash) {
+      // if user is logged in redirect to home page
+      history.push('/home');
+    }
+  }, []);
 
   return (
     <div className="registration-form-container">

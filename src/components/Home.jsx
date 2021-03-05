@@ -43,7 +43,7 @@ export default function HomeComponent() {
   const [editedActivityDetails, setEditedActivityDetails] = useState({
     id: '', name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
 
   // create a hook to use when the logic says to change components
@@ -68,7 +68,7 @@ export default function HomeComponent() {
       }
     });
     setEmail(localStorage.getItem('email'));
-    setName(localStorage.getItem('name'));
+    setUserName(localStorage.getItem('name'));
   }, []);
 
   // update the state that stores the details of a selected activity and show the modal
@@ -116,7 +116,7 @@ export default function HomeComponent() {
         message.roomname = currentRoomName;
         message.email = email;
         message.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
-        message.message = `${name} entered the ${currentRoomName} `;
+        message.message = `${userName} entered the ${currentRoomName} `;
         const newMessage = firebase.database().ref('messages/').push();
         newMessage.set(message);
       };
