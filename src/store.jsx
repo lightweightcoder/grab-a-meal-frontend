@@ -64,6 +64,15 @@ export function setLoggedInUserIdAction(userId) {
   };
 }
 
+export function logoutAction() {
+  return {
+    type: SET_USERID,
+    payload: {
+      loggedInUserId: null,
+    },
+  };
+}
+
 /* ********************************
  * ********************************
  * ********************************
@@ -243,6 +252,32 @@ export function deleteActivity(dispatch, activityId) {
     })
     .catch((error) => {
       console.log('delete activity error', error);
+
+      // redirect user to login page as user tried to access a forbidden page
+      if (error.message === 'Request failed with status code 403') {
+        console.log('forbidden error');
+        return { error: true };
+      }
+
+      return { error: true };
+    });
+}
+
+// allow the user to logout
+export function logout(dispatch) {
+  // make an axios delete request to remove cookies
+  return axios.delete(`${BACKEND_URL}/logout`, { withCredentials: true })
+    .then(() => {
+      // update the loggedInUserId in store to null
+      dispatch(logoutAction());
+
+      // return an object that contains anything to prevent
+      // TypeError: Cannot read property 'error' of undefined
+      // in NavBar.jsx from occuring
+      return { error: false };
+    })
+    .catch((error) => {
+      console.log('logout error', error);
 
       // redirect user to login page as user tried to access a forbidden page
       if (error.message === 'Request failed with status code 403') {

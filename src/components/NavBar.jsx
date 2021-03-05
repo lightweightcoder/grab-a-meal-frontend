@@ -2,9 +2,10 @@ import React, { useContext, useEffect } from 'react';
 import '../component-stylesheets/NavBar.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import { useHistory } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useCookies } from 'react-cookie';
-import { AppContext, setLoggedInUserIdAction } from '../store.jsx';
+import { AppContext, setLoggedInUserIdAction, logout } from '../store.jsx';
 
 export default function NavbarComponent() {
   // set the current cookies (stored in the browser) in the cookies state
@@ -12,6 +13,24 @@ export default function NavbarComponent() {
   // retrieve the store state variable and dispatch function from the App Context provider
   const { store, dispatch } = useContext(AppContext);
   const { loggedInUserId } = store;
+  // create a hook to use when the logic says to change components
+  const history = useHistory();
+
+  // handle when a user clicks on the logout link
+  const handleLogout = () => {
+    // make an axios delete request to remove cookies and update the loggedInUserId
+    // state in app provider to null
+    logout(dispatch).then((result) => {
+      // if there is an error deleting cookies, redirect user to home
+      if (result.error) {
+        history.push('/home');
+        return;
+      }
+
+      // if no error, redirect user to login page
+      history.push('/login');
+    });
+  };
 
   // do the following the 1st time navbar renders
   useEffect(() => {
@@ -46,9 +65,7 @@ export default function NavbarComponent() {
               <LinkContainer to="/messages">
                 <Nav.Link>Messages</Nav.Link>
               </LinkContainer>
-              <LinkContainer to="/logout">
-                <Nav.Link>Logout</Nav.Link>
-              </LinkContainer>
+              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
