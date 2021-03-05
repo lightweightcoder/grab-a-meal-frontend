@@ -14,7 +14,6 @@ export default function Login() {
   const [cookies] = useCookies([]);
   // retrieve the store state variable and dispatch function from the App Context provider
   const { store, dispatch } = useContext(AppContext);
-  const { loggedInUserId } = store;
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const [email, setEmail] = useState('');
@@ -71,8 +70,8 @@ export default function Login() {
   };
 
   useEffect(() => {
-    // if there is a logged in user id, user is logged in
-    if (loggedInUserId) {
+    // if cookies has a userId, user is logged in
+    if (cookies.userId) {
       // redirect to home page
       history.push('/home');
     }

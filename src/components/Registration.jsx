@@ -41,7 +41,10 @@ export default function Register() {
       }
 
       // if user registered successfully,
-      if (result.data.createdUser) {
+      if (result.data.userId) {
+        // set the logged in user's id in the app provider
+        // dispatch(setLoggedInUserIdAction(result.data.userId));
+
         // take the user to home route
         history.push('/home');
       }
