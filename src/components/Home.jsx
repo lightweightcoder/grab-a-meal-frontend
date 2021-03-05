@@ -48,7 +48,6 @@ export default function HomeComponent() {
 
   useEffect(() => {
     retrieveActivities(dispatch).then((result) => {
-      console.log(result);
       if (result.error) {
         history.push('/login');
       }

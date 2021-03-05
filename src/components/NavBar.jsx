@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import '../component-stylesheets/NavBar.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useCookies } from 'react-cookie';
+import { AppContext, setLoggedInUserIdAction } from '../store.jsx';
 
 export default function NavbarComponent() {
   // set the current cookies (stored in the browser) in the cookies state
   const [cookies] = useCookies([]);
+  // retrieve the store state variable and dispatch function from the App Context provider
+  const { store, dispatch } = useContext(AppContext);
+  const { loggedInUserId } = store;
+
+  // do the following the 1st time navbar renders
+  useEffect(() => {
+    // if there is a logged in user id
+    if (cookies.userId) {
+      // set the logged in user's id in the app provider
+      dispatch(setLoggedInUserIdAction(cookies.userId));
+    }
+  }, []);
 
   // if there is loggedInHash and userId in cookies, user is logged in
-  if (cookies.userId && cookies.loggedInHash) {
+  // if there is a logged in userId, user is logged in
+  if (loggedInUserId) {
     // display navbar for a logged in user
     return (
       <div className="navbar-container app-navbar">

@@ -9,14 +9,15 @@ export const initialState = {
   activities: [],
   profile: {},
   selectedActivity: {},
+  loggedInUserId: null,
 };
 
-// just like the todo app, define each action we want to do on the
-// data we defined above
+// define each action we want to do on the data we defined above
 const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
 const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
 const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
 const UPDATE_PROFILE = 'UPDATE_PROFILE';
+const SET_USERID = 'SET_USERID';
 
 // define the matching reducer function
 export function appReducer(state, action) {
@@ -26,6 +27,8 @@ export function appReducer(state, action) {
     case CREATE_ACTIVITY:
       // eslint-disable-next-line max-len
       return { ...state, activities: action.payload.activities, selectedActivity: action.payload.selectedActivity };
+    case SET_USERID:
+      return { ...state, loggedInUserId: action.payload.loggedInUserId };
     default:
       return state;
   }
@@ -39,6 +42,7 @@ export function retrieveActivityAction(activities) {
     },
   };
 }
+
 export function createActivityAction(data) {
   const { activities } = data;
   const selectedActivity = data.newActivityDetails;
@@ -47,6 +51,15 @@ export function createActivityAction(data) {
     payload: {
       activities,
       selectedActivity,
+    },
+  };
+}
+
+export function setLoggedInUserIdAction(userId) {
+  return {
+    type: SET_USERID,
+    payload: {
+      loggedInUserId: userId,
     },
   };
 }

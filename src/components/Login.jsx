@@ -1,17 +1,20 @@
 import '../component-stylesheets/Login.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
   Form, Button, Row, Col,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { BACKEND_URL } from '../store.jsx';
+import { BACKEND_URL, AppContext, setLoggedInUserIdAction } from '../store.jsx';
 import firebase from '../Firebase.js';
 
 export default function Login() {
   // set the current cookies (stored in the browser) in the cookies state
   const [cookies] = useCookies([]);
+  // retrieve the store state variable and dispatch function from the App Context provider
+  const { store, dispatch } = useContext(AppContext);
+  const { loggedInUserId } = store;
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const [email, setEmail] = useState('');
@@ -41,6 +44,8 @@ export default function Login() {
         // setShowLoading(false);
       }
     });
+
+    // make an axios post request to the backend database to find if the user exists
     axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((result) => {
       // if validation failed for login, display validation message
       if (result.data.invalidMessage) {
@@ -49,7 +54,10 @@ export default function Login() {
       }
 
       // if user logged in successfully,
-      if (result.data.loggedIn) {
+      if (result.data.userId) {
+        // set the logged in user's id in the app provider
+        dispatch(setLoggedInUserIdAction(result.data.userId));
+
         // take the user to home route
         history.push('/home');
       }
@@ -63,8 +71,9 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (cookies.userId && cookies.loggedInHash) {
-      // if user is logged in redirect to home page
+    // if there is a logged in user id, user is logged in
+    if (loggedInUserId) {
+      // redirect to home page
       history.push('/home');
     }
   }, []);
