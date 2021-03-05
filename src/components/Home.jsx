@@ -447,6 +447,8 @@ export default function HomeComponent() {
           discountedPrice={activity.discountedPrice}
           participants={activity.users}
           onClick={() => { handleDisplay(activity); }}
+          activityId={activity.id}
+          handleJoinActivity={handleJoinActivity}
         />
       </div>
     ));

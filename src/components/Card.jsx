@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import './Card.css';
 
 export default function CardComponent({
-  title, date, location, onClick, totalNumOfParticipants, usualPrice, discountedPrice, participants,
+  title, date, location, onClick, totalNumOfParticipants, usualPrice, discountedPrice, participants, activityId, handleJoinActivity,
 }) {
   // eslint-disable-next-line max-len
   const percentageDiscount = Number((((Number(usualPrice) - Number(discountedPrice)) / Number(usualPrice)) * 100).toFixed(2));
@@ -22,7 +22,7 @@ export default function CardComponent({
               </h5>
             </div>
             <div className="col-1 offset-1">
-              <button type="button" className="btn-circle"> Join </button>
+              <button type="button" className="btn-circle" onClick={handleJoinActivity(activityId)}> Join </button>
             </div>
           </div>
         </Card.Header>
