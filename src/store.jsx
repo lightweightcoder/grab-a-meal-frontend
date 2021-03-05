@@ -133,7 +133,8 @@ export function createActivity(dispatch, activity) {
         // add the new activity as the selected activity and update the activities in store
         dispatch(createActivityAction(result.data));
 
-        resolve(result.data.newActivityDetails.id);
+        resolve(result.data.newActivityDetails);
+        console.log(result.data.newActivityDetails);
       })
       .catch((error) => {
         console.log('create activity error', error);
@@ -157,11 +158,12 @@ export function joinActivity(dispatch, activityId) {
     .then((result) => {
       // update the store in AppProvider with the updated activities
       dispatch(retrieveActivityAction(result.data.activities));
-
+      console.log(result.data.activities, 'inside store');
+      const activityData = result.data.activities;
       // return an object that contains anything to prevent
       // TypeError: Cannot read property 'error' of undefined
       // in Home.jsx from occuring
-      return { error: false };
+      return { error: false, activity: activityData };
     })
     .catch((error) => {
       console.log('join activity error', error);

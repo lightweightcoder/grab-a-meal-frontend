@@ -12,8 +12,6 @@ export default function ConversationListItem({
     shave('.conversation-snippet', 30);
   });
   const handleConvoChange = () => {
-    // console.log(convotitle[value].roomname);
-    console.log(title);
     setRoomName(title);
   };
   return (

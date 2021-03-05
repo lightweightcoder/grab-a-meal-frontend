@@ -22,12 +22,12 @@ export default function MessageList({
   // const [messages, setMessages] = useState([]);
   const [email, setEmail] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
+  const [name, setName] = useState('');
   const [chats, setChats] = useState([]);
   const [newChat, setNewChat] = useState({
     roomname: '', email: '', message: '', date: '', type: '',
   });
   const history = useHistory();
-
   // function that extracts Firebase response to Array of Objects
   const snapshotToArray = (snapshot) => {
     const returnArr = [];
@@ -40,12 +40,17 @@ export default function MessageList({
     return returnArr;
   };
   // Retrieval from Firebase: Message Content
-  const convoTitle = conversationTitles[0].roomname;
+  const convoTitle = conversationTitles[0];
+
   useEffect(() => {
+    setName(localStorage.getItem('name'));
+    console.log('in use Effect of messageList');
     const fetchData = async () => {
       setEmail(localStorage.getItem('email'));
-      firebase.database().ref('chats/').orderByChild('roomname').equalTo(roomName)
+      setName(localStorage.getItem('name'));
+      firebase.database().ref('messages/').orderByChild('roomname').equalTo(roomName)
         .on('value', (resp) => {
+          console.log(resp);
           setChats([]);
           setChats(snapshotToArray(resp));
           // setSenderEmail()
@@ -57,17 +62,18 @@ export default function MessageList({
   const onChange = (e) => {
     setNewChat({ ...newChat, [e.target.name]: e.target.value });
   };
+
   const submitMessage = (e) => {
     e.preventDefault();
     const chat = newChat;
     chat.roomname = roomName;
     chat.email = email;
     chat.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
-    chat.type = 'message';
-    const newMessage = firebase.database().ref('chats/').push();
+    chat.sentBy = name;
+    const newMessage = firebase.database().ref('messages/').push();
     newMessage.set(chat);
     setNewChat({
-      roomname: '', email: '', message: '', date: '', type: '',
+      roomname: '', email: '', message: '', date: '', sentBy: name,
     });
   };
 
