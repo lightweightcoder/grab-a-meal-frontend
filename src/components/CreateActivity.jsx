@@ -82,7 +82,7 @@ export default function CreateActivityComponent() {
   // run this after component renders for the 1st time
   useEffect(() => {
     // if cookies has no userId, user is accessing this component illegally
-    if (cookies.userId) {
+    if (!cookies.userId) {
       // redirect to login page
       history.push('/login');
     }
