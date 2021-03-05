@@ -16,7 +16,7 @@ export default function NavbarComponent() {
   // do the following the 1st time navbar renders
   useEffect(() => {
     // if there is a logged in user id
-    if (cookies.userId) {
+    if (cookies.userId && cookies.loggedInHash) {
       // set the logged in user's id in the app provider
       dispatch(setLoggedInUserIdAction(cookies.userId));
     }
