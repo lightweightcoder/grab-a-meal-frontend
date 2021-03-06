@@ -20,6 +20,7 @@ import {
   leaveActivity,
   deleteActivity,
 } from '../store.jsx';
+import welcomeMessage from '../utilities/welcomeMessage.jsx';
 import firebase from '../Firebase.js';
 
 export default function HomeComponent() {
@@ -109,28 +110,17 @@ export default function HomeComponent() {
         history.push('/login');
         return;
       }
-      const welcomeMessage = (currentRoomName) => {
-        const message = {
-          roomname: '', email: '', message: '', date: '',
-        };
-        message.roomname = currentRoomName;
-        message.email = email;
-        message.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
-        message.message = `${userName} entered the ${currentRoomName} `;
-        const newMessage = firebase.database().ref('messages/').push();
-        newMessage.set(message);
-      };
 
       const fetchData = new Promise((resolve, reject) => {
         firebase.database().ref('rooms/').on('value', (resp) => {
           findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
-          welcomeMessage(findKey.roomname);
           resolve(1);
         });
       });
       fetchData.then(() => {
         const currentUserId = localStorage.getItem('userId');
         const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
+        welcomeMessage(findKey.roomname, email, userName);
         updateUserRef.once('value', (snapshot) => {
           if (snapshot.exists()) {
             const currentUsers = snapshot.val();

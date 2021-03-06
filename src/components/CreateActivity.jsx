@@ -17,6 +17,7 @@ import {
   AppContext,
   createActivity,
 } from '../store.jsx';
+import welcomeMessage from '../utilities/welcomeMessage.jsx';
 import firebase from '../Firebase.js';
 
 export default function CreateActivityComponent() {
@@ -36,27 +37,14 @@ export default function CreateActivityComponent() {
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const ref = firebase.database().ref('users/');
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   useEffect(() => {
     setEmail(localStorage.getItem('email'));
-    setName(localStorage.getItem('name'));
+    setUserName(localStorage.getItem('name'));
   }, []);
   // handle when user clicks on the 'submit' button to create an activity
   const handleCreateActivity = () => {
-    // Welcome message
-    const welcomeMessage = (currentRoomName) => {
-      const message = {
-        roomname: '', email: '', message: '', date: '',
-      };
-      message.roomname = currentRoomName;
-      message.email = email;
-      message.date = moment(new Date()).format('DD/MM/YYYY HH:mm:ss');
-      message.message = `${name} created the ${currentRoomName} `;
-      const newMessage = firebase.database().ref('messages/').push();
-      newMessage.set(message);
-    };
-
     // make an axios post request to create an activity
     createActivity(dispatch, newActivity).then((result) => {
       // if there was an error redirect user to login
@@ -84,7 +72,7 @@ export default function CreateActivityComponent() {
           },
         );
       });
-      welcomeMessage(result.name);
+      welcomeMessage(result.name, email, userName);
       // take the user to the chat room of the newly created chat
       history.push('/messages');
     });
