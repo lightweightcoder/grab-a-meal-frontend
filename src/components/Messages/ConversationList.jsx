@@ -63,7 +63,8 @@ export default function ConversationList({
 
   const convoListJsx = () => {
     const convoList = conversationTitles.map((convo, i) => (
-      <div key={convo[i]}>
+      // eslint-disable-next-line react/no-array-index-key
+      <div key={convo + i}>
         <ConversationListItem
           title={convo}
           value={i}

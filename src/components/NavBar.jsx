@@ -27,7 +27,12 @@ export default function NavbarComponent() {
         return;
       }
 
-      // if no error, redirect user to login page
+      // if no error, do the following:
+      // remove the user's details from local storage
+      localStorage.removeItem('email');
+      localStorage.removeItem('name');
+      localStorage.removeItem('userId');
+      // redirect user to login page
       history.push('/login');
     });
   };
