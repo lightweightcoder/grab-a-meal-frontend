@@ -59,7 +59,6 @@ export default function Messages() {
       const userId = localStorage.getItem('userId');
       firebase.database().ref('rooms/').on('value', (resp) => {
         allChat = snapshotToTitleArray(resp);
-        // console.log(allChat[0].activityUsers.users)
         const titlePresent = [];
         allChat.forEach((chat) => {
           const userIdPresent = chat.activityUsers.users.includes(Number(userId));
