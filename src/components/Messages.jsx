@@ -84,11 +84,11 @@ export default function Messages() {
     if (show) {
       return (
         <Alert variant="danger" onClose={() => { window.location.href = 'home'; }} dismissible>
-          <Alert.Heading>Oh snap! You have no messages!</Alert.Heading>
+          <Alert.Heading>Oh it looks like You have no messages!</Alert.Heading>
           <p>
-            Join an activity first!
+            Join or create an activity first!
           </p>
-          <Button onClick={() => { window.location.href = 'home'; }}>Join Activity</Button>
+          <Button onClick={() => { window.location.href = 'home'; }}>Return to home</Button>
         </Alert>
       );
     }

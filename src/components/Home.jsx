@@ -226,13 +226,35 @@ export default function HomeComponent() {
         history.push('/login');
         return;
       }
-
-      // close the display of the modal that shows the activity details
-      setdisplayCardDetails(false);
-      // set the modal to show the activity details next time it opens
-      setEditOrViewActivity('VIEW');
-    });
-  };
+      const activityId = result.activityData[0].id;
+      let findKey;
+      const fetchData = new Promise((resolve, reject) => {
+        firebase.database().ref('rooms/').on('value', (resp) => {
+          findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
+          resolve(1);
+        });
+      });
+      fetchData.then(() => {
+        const currentUserId = localStorage.getItem('userId');
+        const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
+        updateUserRef.once('value', (snapshot) => {
+          if (snapshot.exists()) {
+            // console.log(snapshot.val());
+            const currentActiveUsersArray = snapshot.val();
+            console.log(currentActiveUsersArray, 'arraylist');
+            const indexToRemove = currentActiveUsersArray.indexOf(Number(currentUserId));
+            console.log(indexToRemove);
+            const updatedActiveUsersArray = currentActiveUsersArray.splice(indexToRemove - 1, 1);
+            updateUserRef.set(updatedActiveUsersArray);
+          }
+        });
+        console.log(fetchData);
+        // close the display of the modal that shows the activity details
+        setdisplayCardDetails(false);
+        // set the modal to show the activity details next time it opens
+        setEditOrViewActivity('VIEW');
+      });
+    }); };
 
   // handle when user clicks on delete activity button
   const handleDeleteActivityBtnClick = () => {

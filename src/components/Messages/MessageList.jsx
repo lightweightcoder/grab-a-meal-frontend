@@ -68,11 +68,11 @@ export default function MessageList({
     );
   }
 
-  const noActivityJoinedMessageJsx = () => (
-    <div className="alert alert-info" role="alert">
-      A simple info alert—check it out!
-    </div>
-  );
+  // const noActivityJoinedMessageJsx = () => (
+  //   <div className="alert alert-info" role="alert">
+  //     A simple info alert—check it out!
+  //   </div>
+  // );
 
   const retrieveMessagesTitle = () => {
     firebase.database().ref('messages/').orderByChild('roomname').equalTo(roomName)
@@ -91,7 +91,7 @@ export default function MessageList({
       setName(localStorage.getItem('name'));
       if (roomName === undefined) {
         console.log('inside undefined');
-        noActivityJoinedMessageJsx();
+        // noActivityJoinedMessageJsx();
       } else {
         retrieveMessagesTitle();
       }

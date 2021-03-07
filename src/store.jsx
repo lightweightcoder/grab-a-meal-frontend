@@ -219,11 +219,11 @@ export function leaveActivity(dispatch, activityId) {
     .then((result) => {
       // update the store in AppProvider with the updated activities (and its participants)
       dispatch(retrieveActivityAction(result.data.activities));
-
+      const activityData = result.data.activities;
       // return an object that contains anything to prevent
       // TypeError: Cannot read property 'error' of undefined
       // in Home.jsx from occuring
-      return { error: false };
+      return { error: false, activityData };
     })
     .catch((error) => {
       console.log('leave activity error', error);
