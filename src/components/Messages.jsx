@@ -14,6 +14,7 @@ import {
   ListGroupItem,
   Button,
 } from 'reactstrap';
+import Alert from 'react-bootstrap/Alert';
 import { useCookies } from 'react-cookie';
 import ConversationList from './Messages/ConversationList.jsx';
 import MessageList from './Messages/MessageList.jsx';
@@ -77,6 +78,26 @@ export default function Messages() {
     fetchMessageTitleData();
   }, []);
 
+  function AlertDismissibleExample() {
+    const [show, setShow] = useState(true);
+
+    if (show) {
+      return (
+        <Alert variant="danger" onClose={() => { window.location.href = 'home'; }} dismissible>
+          <Alert.Heading>Oh snap! You have no messages!</Alert.Heading>
+          <p>
+            Join an activity first!
+          </p>
+          <Button onClick={() => { window.location.href = 'home'; }}>Join Activity</Button>
+        </Alert>
+      );
+    }
+  }
+  if (!roomName) {
+    return (
+      <AlertDismissibleExample />
+    );
+  }
   return (
     <div className="messenger">
       <div className="scrollable sidebar">
@@ -103,7 +124,6 @@ export default function Messages() {
             </div>
           </>
         )}
-
       {/* add forRefresh to make the components render */}
       {/* <Router forceRefresh> */}
       {/* <Redirect

@@ -11,6 +11,7 @@ import {
 import {
   InputGroup, InputGroupAddon, Button, Input, Form,
 } from 'reactstrap';
+import Alert from 'react-bootstrap/Alert';
 import MessageChat from './MessageChat.jsx';
 import firebase from '../../Firebase.js';
 
@@ -42,19 +43,58 @@ export default function MessageList({
   // Retrieval from Firebase: Message Content
   const convoTitle = conversationTitles[0];
 
+  function AlertDismissible() {
+    const [show, setShow] = useState(true);
+
+    return (
+      <>
+        <Alert show={show} variant="success">
+          <Alert.Heading>Hows it going?!</Alert.Heading>
+          <p>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget
+            lacinia odio sem nec elit. Cras mattis consectetur purus sit amet
+            fermentum.
+          </p>
+          <hr />
+          <div className="d-flex justify-content-end">
+            <Button onClick={() => setShow(false)} variant="outline-success">
+              Close me all!
+            </Button>
+          </div>
+        </Alert>
+
+        {!show && <Button onClick={() => setShow(true)}>Show Alert</Button>}
+      </>
+    );
+  }
+
+  const noActivityJoinedMessageJsx = () => (
+    <div className="alert alert-info" role="alert">
+      A simple info alert—check it out!
+    </div>
+  );
+
+  const retrieveMessagesTitle = () => {
+    firebase.database().ref('messages/').orderByChild('roomname').equalTo(roomName)
+      .on('value', (resp) => {
+        console.log(resp);
+        setChats([]);
+        setChats(snapshotToArray(resp));
+      });
+  };
+
   useEffect(() => {
     setName(localStorage.getItem('name'));
     console.log('in use Effect of messageList');
     const fetchData = async () => {
       setEmail(localStorage.getItem('email'));
       setName(localStorage.getItem('name'));
-      firebase.database().ref('messages/').orderByChild('roomname').equalTo(roomName)
-        .on('value', (resp) => {
-          console.log(resp);
-          setChats([]);
-          setChats(snapshotToArray(resp));
-          // setSenderEmail()
-        });
+      if (roomName === undefined) {
+        console.log('inside undefined');
+        noActivityJoinedMessageJsx();
+      } else {
+        retrieveMessagesTitle();
+      }
     };
 
     fetchData();
