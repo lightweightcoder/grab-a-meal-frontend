@@ -21,6 +21,7 @@ import {
   deleteActivity,
 } from '../store.jsx';
 import welcomeMessage from '../utilities/welcomeMessage.jsx';
+import exitMessage from '../utilities/exitMessage.jsx';
 import firebase from '../Firebase.js';
 
 export default function HomeComponent() {
@@ -226,20 +227,20 @@ export default function HomeComponent() {
         history.push('/login');
         return;
       }
-      const activityId = result.activityData[0].id;
       let findKey;
       const fetchData = new Promise((resolve) => {
         firebase.database().ref('rooms/').on('value', (resp) => {
-          findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
+          findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityDetails.id));
           resolve(1);
         });
       });
       fetchData.then(() => {
         const currentUserId = localStorage.getItem('userId');
         const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
+        console.log(findKey);
+        exitMessage(findKey.roomname, email, userName);
         updateUserRef.once('value', (snapshot) => {
           if (snapshot.exists()) {
-            // console.log(snapshot.val());
             const currentActiveUsersArray = snapshot.val();
             console.log(currentActiveUsersArray, 'arraylist');
             const indexToRemove = currentActiveUsersArray.indexOf(Number(currentUserId));
@@ -335,7 +336,7 @@ export default function HomeComponent() {
             <Modal.Title>{activityDetails.name}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Description
+            Description:
             {' '}
             {activityDetails.description}
             <br />
@@ -469,7 +470,6 @@ export default function HomeComponent() {
     const activityFeed = activities.map((activity) => (
       <div key={activity.id}>
         <div className="bg-white border-top border-left border-right border-bottom mt-2">
-          {console.log(activity)}
           <div className="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
             <div className="d-flex flex-row align-items-center  px-2">
               <img className="rounded-circle" src="https://www.clipartkey.com/mpngs/m/29-297748_round-profile-image-placeholder.png" alt="" width="45" />
