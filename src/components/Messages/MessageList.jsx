@@ -1,34 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-// import Compose from '../Compose';
-// import Toolbar from '../Toolbar';
-// import ToolbarButton from '../ToolbarButton';
 import {
-  Link,
-  useHistory,
-  useParams,
-} from 'react-router-dom';
-import {
-  InputGroup, InputGroupAddon, Button, Input, Form,
+  InputGroup, InputGroupAddon, Input, Form,
 } from 'reactstrap';
-import Alert from 'react-bootstrap/Alert';
 import MessageChat from './MessageChat.jsx';
 import firebase from '../../Firebase.js';
 
 import './Message.css';
 
 export default function MessageList({
-  conversationTitles, setConversationsTitles, showLoading, setShowLoading, roomName, setRoomName,
+  roomName,
 }) {
   // const [messages, setMessages] = useState([]);
   const [email, setEmail] = useState('');
-  const [senderEmail, setSenderEmail] = useState('');
   const [name, setName] = useState('');
   const [chats, setChats] = useState([]);
   const [newChat, setNewChat] = useState({
     roomname: '', email: '', message: '', date: '', type: '',
   });
-  const history = useHistory();
   // function that extracts Firebase response to Array of Objects
   const snapshotToArray = (snapshot) => {
     const returnArr = [];
@@ -41,38 +30,7 @@ export default function MessageList({
     return returnArr;
   };
   // Retrieval from Firebase: Message Content
-  const convoTitle = conversationTitles[0];
-
-  function AlertDismissible() {
-    const [show, setShow] = useState(true);
-
-    return (
-      <>
-        <Alert show={show} variant="success">
-          <Alert.Heading>Hows it going?!</Alert.Heading>
-          <p>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget
-            lacinia odio sem nec elit. Cras mattis consectetur purus sit amet
-            fermentum.
-          </p>
-          <hr />
-          <div className="d-flex justify-content-end">
-            <Button onClick={() => setShow(false)} variant="outline-success">
-              Close me all!
-            </Button>
-          </div>
-        </Alert>
-
-        {!show && <Button onClick={() => setShow(true)}>Show Alert</Button>}
-      </>
-    );
-  }
-
-  // const noActivityJoinedMessageJsx = () => (
-  //   <div className="alert alert-info" role="alert">
-  //     A simple info alert—check it out!
-  //   </div>
-  // );
+  // const convoTitle = conversationTitles[0];
 
   const retrieveMessagesTitle = () => {
     firebase.database().ref('messages/').orderByChild('roomname').equalTo(roomName)
@@ -85,13 +43,11 @@ export default function MessageList({
 
   useEffect(() => {
     setName(localStorage.getItem('name'));
-    console.log('in use Effect of messageList');
     const fetchData = async () => {
       setEmail(localStorage.getItem('email'));
       setName(localStorage.getItem('name'));
       if (roomName === undefined) {
         console.log('inside undefined');
-        // noActivityJoinedMessageJsx();
       } else {
         retrieveMessagesTitle();
       }
@@ -120,7 +76,7 @@ export default function MessageList({
   const renderMessages = () => {
     let i = 0;
     const messageCount = chats.length;
-    const tempMessages = [];
+    const messagesArray = [];
 
     while (i < messageCount) {
       const currentEmail = chats[i].email;
@@ -159,7 +115,7 @@ export default function MessageList({
         }
       }
 
-      tempMessages.push(
+      messagesArray.push(
         <MessageChat
           key={i}
           isMine={isMine}
@@ -174,20 +130,11 @@ export default function MessageList({
       i += 1;
     }
 
-    return tempMessages;
+    return messagesArray;
   };
 
   return (
     <div className="message-list">
-      {/* <Toolbar
-        title="Conversation Title"
-        rightItems={[
-          <ToolbarButton key="info" icon="ion-ios-information-circle-outline" />,
-          <ToolbarButton key="video" icon="ion-ios-videocam" />,
-          <ToolbarButton key="phone" icon="ion-ios-call" />,
-        ]} */}
-      {/* /> */}
-
       <div className="message-list-container">{renderMessages()}</div>
       <div className="compose">
         <div className="col-12">

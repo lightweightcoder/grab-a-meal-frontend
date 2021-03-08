@@ -13,7 +13,7 @@ export default function Login() {
   // set the current cookies (stored in the browser) in the cookies state
   const [cookies] = useCookies([]);
   // retrieve the store state variable and dispatch function from the App Context provider
-  const { store, dispatch } = useContext(AppContext);
+  const { dispatch } = useContext(AppContext);
   // create a hook to use when the logic says to change components
   const history = useHistory();
   const [email, setEmail] = useState('');
@@ -62,8 +62,6 @@ export default function Login() {
           }
         });
       }
-    }).then((result) => {
-      console.log(creds, 'creds');
     }); };
 
   const onEmailChange = (e) => {

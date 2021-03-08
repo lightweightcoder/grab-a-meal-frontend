@@ -7,7 +7,6 @@ import {
 } from 'react-bootstrap';
 import DateTimePicker from 'react-datetime-picker';
 import '../component-stylesheets/CreateActivity.css';
-import moment from 'moment';
 import {
   categoryOptions, numOfParticipantsOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
 } from '../utilities/activityForm.jsx';
@@ -26,7 +25,7 @@ export default function CreateActivityComponent() {
   // initialize the data from the context provider to obtain the
   // state and dispatch function from the value attribute
   // of the provider Higher Order Component in store.jsx
-  const { store, dispatch } = useContext(AppContext);
+  const { dispatch } = useContext(AppContext);
   // state to control create activity form inputs
   const [newActivity, setNewActivity] = useState({
     name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',

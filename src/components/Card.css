@@ -6,6 +6,9 @@
   line-height: 1.42857;
   background-color: lightgreen;
 }
-.card-container {
-  margin-bottom: 10px;
+.socials i {
+  margin-right: 14px;
+  font-size: 17px;
+  color: #d2c8c8;
+  cursor: pointer
 }

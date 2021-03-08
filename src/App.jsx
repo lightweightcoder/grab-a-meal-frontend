@@ -4,8 +4,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
-  useLocation,
 } from 'react-router-dom';
 import NavbarComponent from './components/NavBar.jsx';
 import LoginComponent from './components/Login.jsx';

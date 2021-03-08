@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from 'react';
+import React, { useReducer } from 'react';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -15,8 +15,8 @@ export const initialState = {
 // define each action we want to do on the data we defined above
 const CREATE_ACTIVITY = 'CREATE_ACTIVITY';
 const RETRIEVE_ACTIVITY = 'RETRIEVE_ACTIVITY';
-const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
-const UPDATE_PROFILE = 'UPDATE_PROFILE';
+// const RETREIVE_PROFILE = 'RETREIVE_PROFILE';
+// const UPDATE_PROFILE = 'UPDATE_PROFILE';
 const SET_USERID = 'SET_USERID';
 
 // define the matching reducer function
@@ -137,7 +137,7 @@ export function retrieveActivities(dispatch) {
 
 // allow a user to create an activity
 export function createActivity(dispatch, activity) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     axios.post(`${BACKEND_URL}/activities`, activity, { withCredentials: true })
       .then((result) => {
         // add the new activity as the selected activity and update the activities in store
@@ -245,11 +245,11 @@ export function deleteActivity(dispatch, activityId) {
     .then((result) => {
       // update the store in AppProvider with the updated activities (and its participants)
       dispatch(retrieveActivityAction(result.data.activities));
-
+      const activityData = result.data.activities;
       // return an object that contains anything to prevent
       // TypeError: Cannot read property 'error' of undefined
       // in Home.jsx from occuring
-      return { error: false };
+      return { error: false, activityData };
     })
     .catch((error) => {
       console.log('delete activity error', error);

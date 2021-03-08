@@ -20,7 +20,7 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 'warn',
-    'react/prop-types': 'warn',
+    'react/prop-types': 'off',
     'max-len': 'warn',
     'no-shadow': 'warn',
     'no-nested-ternary': 'warn',

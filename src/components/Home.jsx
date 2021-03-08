@@ -111,7 +111,7 @@ export default function HomeComponent() {
         return;
       }
 
-      const fetchData = new Promise((resolve, reject) => {
+      const fetchData = new Promise((resolve) => {
         firebase.database().ref('rooms/').on('value', (resp) => {
           findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
           resolve(1);
@@ -228,7 +228,7 @@ export default function HomeComponent() {
       }
       const activityId = result.activityData[0].id;
       let findKey;
-      const fetchData = new Promise((resolve, reject) => {
+      const fetchData = new Promise((resolve) => {
         firebase.database().ref('rooms/').on('value', (resp) => {
           findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
           resolve(1);
@@ -265,6 +265,23 @@ export default function HomeComponent() {
         history.push('/login');
         return;
       }
+      let findKey;
+      const fetchData = new Promise((resolve) => {
+        firebase.database().ref('rooms/').on('value', (resp) => {
+          findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityDetails.id));
+          console.log(findKey);
+          resolve(1);
+        });
+      });
+      fetchData.then(() => {
+        console.log('inside fetchdata.then');
+        const deleteUserRef = firebase.database().ref(`rooms/${findKey.key}`);
+        deleteUserRef.remove();
+        // close the display of the modal that shows the activity details
+        setdisplayCardDetails(false);
+        // set the modal to show the activity details next time it opens
+        setEditOrViewActivity('VIEW');
+      });
 
       // close the display of the modal that shows the activity details
       setdisplayCardDetails(false);
@@ -448,20 +465,45 @@ export default function HomeComponent() {
   };
 
   const activityDisplay = () => {
+    const userId = localStorage.getItem('userId');
     const activityFeed = activities.map((activity) => (
       <div key={activity.id}>
-        <CardComponent
-          title={activity.name}
-          date={moment(activity.dateTime).format('ll')}
-          location={activity.location}
-          totalNumOfParticipants={activity.totalNumOfParticipants}
-          usualPrice={activity.usualPrice}
-          discountedPrice={activity.discountedPrice}
-          participants={activity.users}
-          onClick={() => { handleDisplay(activity); }}
-          activityId={activity.id}
-          handleJoinActivity={handleJoinActivity}
-        />
+        <div className="bg-white border-top border-left border-right border-bottom mt-2">
+          {console.log(activity)}
+          <div className="d-flex flex-row justify-content-between align-items-center p-2 border-bottom">
+            <div className="d-flex flex-row align-items-center  px-2">
+              <img className="rounded-circle" src="https://www.clipartkey.com/mpngs/m/29-297748_round-profile-image-placeholder.png" alt="" width="45" />
+              <div className="d-flex flex-column ml-2">
+                <span className="font-weight-bold">{activity.name}</span>
+                <span className="text-black-50 time">
+                  {' '}
+                  Created:
+                  {' '}
+                  {moment(activity.createdAt).fromNow()}
+                </span>
+              </div>
+
+            </div>
+            {Number(userId) !== activity.creatorId ? (
+              <div className="px-2 button running ld ld-ext-left ld ld-cross ld-rubber">
+                <button type="button" className="join-button" onClick={handleJoinActivity(activity.id)}> Join </button>
+              </div>
+            ) : ''}
+          </div>
+          <CardComponent
+            title={activity.name}
+            date={moment(activity.dateTime).format('ll')}
+            location={activity.location}
+            totalNumOfParticipants={activity.totalNumOfParticipants}
+            usualPrice={activity.usualPrice}
+            discountedPrice={activity.discountedPrice}
+            participants={activity.users}
+            onClick={() => { handleDisplay(activity); }}
+            activityId={activity.id}
+            handleJoinActivity={handleJoinActivity}
+          />
+        </div>
+
       </div>
     ));
     return activityFeed;
@@ -469,19 +511,29 @@ export default function HomeComponent() {
 
   return (
     <div>
-      <div className="container create-button-div">
-        <Link to="/activities/new" className="btn btn-primary" role="button">Create New Activity</Link>
-      </div>
-      <div className="container container-div">
+      {/* <div className="container container-div">
         <ButtonGroup aria-label="Basic example">
           <Button variant="secondary">Feed</Button>
           <Button variant="secondary">Your Created Activities</Button>
           <Button variant="secondary">Your Joined Activities</Button>
         </ButtonGroup>
-      </div>
-      <br />
-      <div className="container feed-container">
-        {activityDisplay()}
+      </div> */}
+      {/* <br /> */}
+      <div className="container mt-4 mb-5">
+        <div className="d-flex justify-content-center row">
+          <div className="col-md-8">
+            <div className="d-flex flex-row justify-content-between align-items-center">
+              <div className="px-2">
+                {/* <h6 className="text-black-50 mt-2">Create a new Activity</h6> */}
+              </div>
+              {/* <div className="feed-icon px-2"><i className="fa fa-long-arrow-up text-black-50" /></div> */}
+              {/* <div className="container create-button-div"> */}
+              <Link to="/activities/new" className="create-activity-button" role="button">Create New Activity</Link>
+            </div>
+            {activityDisplay()}
+          </div>
+        </div>
+
         {cardSelectionModal()}
       </div>
     </div>

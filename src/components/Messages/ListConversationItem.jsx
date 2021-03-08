@@ -6,7 +6,7 @@ import shave from 'shave';
 import './Message.css';
 
 export default function ConversationListItem({
-  title, setRoomName, roomName, value, conversationTitles, onClick,
+  title, setRoomName, roomName,
 }) {
   useEffect(() => {
     shave('.conversation-snippet', 30);
@@ -21,7 +21,7 @@ export default function ConversationListItem({
       onClick={() => { handleConvoChange(); }}
     >
       {console.log(roomName)}
-      <img className="conversation-photo" src="../photo.jpg" alt="conversation" />
+      <img className="conversation-photo" src="../logo.png" alt="" />
       <div className="conversation-info">
         <h1 className="conversation-title">{title}</h1>
         <p className="conversation-snippet">This is a long message. I think you will want to read this message as soon as possible. This is just a test for react, which is cool. i know i know.</p>

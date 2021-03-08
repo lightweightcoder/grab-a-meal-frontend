@@ -21,7 +21,7 @@ export default function Register() {
   // set the current cookies (stored in the browser) in the cookies state
   const [cookies] = useCookies([]);
   // retrieve the store state variable and dispatch function from the App Context provider
-  const { store, dispatch } = useContext(AppContext);
+  const { dispatch } = useContext(AppContext);
 
   const handleRegister = (event) => {
     console.log('handle register');

@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  useLocation,
   useHistory,
 } from 'react-router-dom';
 import {
-  Jumbotron,
   Spinner,
-  ListGroup,
-  ListGroupItem,
   Button,
 } from 'reactstrap';
 import Alert from 'react-bootstrap/Alert';
@@ -27,11 +19,9 @@ export default function Messages() {
   // const location = useLocation();
   const [conversationTitles, setConversationTitles] = useState([]);
   const [roomName, setRoomName] = useState('');
-  const [name, setName] = useState('');
-  const [userId, setUserId] = useState(null);
   // showLoading is necessary for the conversationTitle to load before getting the messages
   const [showLoading, setShowLoading] = useState(true);
-  const [email, setEmail] = useState('');
+  const [lastMessage, setLastMessage] = useState('');
   // Retrieval from FireBase: Activity Message Title
   const snapshotToTitleArray = (snapshot) => {
     const returnTitleArr = [];
@@ -55,8 +45,6 @@ export default function Messages() {
     }
     let allChat;
     const fetchMessageTitleData = async () => {
-      setEmail(localStorage.getItem('email'));
-      setName(localStorage.getItem('name'));
       const userId = localStorage.getItem('userId');
       firebase.database().ref('rooms/').on('value', (resp) => {
         allChat = snapshotToTitleArray(resp);
@@ -79,19 +67,15 @@ export default function Messages() {
   }, []);
 
   function AlertDismissibleExample() {
-    const [show, setShow] = useState(true);
-
-    if (show) {
-      return (
-        <Alert variant="danger" onClose={() => { window.location.href = 'home'; }} dismissible>
-          <Alert.Heading>Oh it looks like You have no messages!</Alert.Heading>
-          <p>
-            Join or create an activity first!
-          </p>
-          <Button onClick={() => { window.location.href = 'home'; }}>Return to home</Button>
-        </Alert>
-      );
-    }
+    return (
+      <Alert variant="danger" onClose={() => { window.location.href = 'home'; }} dismissible>
+        <Alert.Heading>Oh it looks like You have no messages!</Alert.Heading>
+        <p>
+          Join or create an activity first!
+        </p>
+        <Button onClick={() => { window.location.href = 'home'; }}>Return to home</Button>
+      </Alert>
+    );
   }
   if (!roomName) {
     return (
@@ -120,51 +104,12 @@ export default function Messages() {
                 setRoomName={setRoomName}
                 showLoading={showLoading}
                 setShowLoading={setShowLoading}
+                lastMessage={lastMessage}
+                sendLastmessage={setLastMessage}
               />
             </div>
           </>
         )}
-      {/* add forRefresh to make the components render */}
-      {/* <Router forceRefresh> */}
-      {/* <Redirect
-          to={{
-            pathname: '/login',
-            state: { from: location },
-          }}
-        /> */}
-      {/* <Switch>
-          <SecureRoute path="/messages"> */}
-      {/* <RoomList /> */}
-      {/* <ChatRoom /> */}
-      {/* </SecureRoute> */}
-      {/* <Route path="/login"> */}
-      {/* <LoginComponent /> */}
-      {/* </Route> */}
-      {/* <SecureRoute path="/addroom"> */}
-      {/* <AddRoom /> */}
-      {/* </SecureRoute> */}
-      {/* <SecureRoute path="/chatroom/:room"> */}
-      {/* </SecureRoute> */}
-      {/* </Switch> */}
-      {/* </Router> */}
     </div>
   );
 }
-// function SecureRoute({ children, ...rest }) {
-//   return (
-//     <Route
-//       // eslint-disable-next-line react/jsx-props-no-spreading
-//       {...rest}
-//       render={({ location }) => (localStorage.getItem('email') ? (
-//         children
-//       ) : (
-//         <Redirect
-//           to={{
-//             pathname: '/login',
-//             state: { from: location },
-//           }}
-//         />
-//       ))}
-//     />
-//   );
-// }
