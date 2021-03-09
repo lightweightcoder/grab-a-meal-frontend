@@ -118,8 +118,8 @@ export function AppProvider({ children }) {
 // these functions must be passed the dispatch from the current context
 
 // export const BACKEND_URL = 'http://localhost:3004';
-// export const BACKEND_URL = 'https://grab-a-meal-backend.herokuapp.com';
-export const BACKEND_URL = 'https://backend.gohangout.club';
+export const BACKEND_URL = 'https://grab-a-meal-backend.herokuapp.com';
+// export const BACKEND_URL = 'https://backend.gohangout.club';
 
 export function retrieveActivities(dispatch) {
   return axios.get(`${BACKEND_URL}/activities`, { withCredentials: true }).then((result) => {
