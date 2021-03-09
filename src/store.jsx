@@ -118,7 +118,7 @@ export function AppProvider({ children }) {
 // these functions must be passed the dispatch from the current context
 
 // export const BACKEND_URL = 'http://localhost:3004';
-export const { BACKEND_URL } = process.env;
+export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 // export const BACKEND_URL = 'https://hangouts-back-end.netlify.app/';
 
 export function retrieveActivities(dispatch) {
