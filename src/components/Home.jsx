@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import {
-  Modal, Button, ButtonGroup, Form, Row, Col,
+  Modal, Button, Form, Row, Col,
 } from 'react-bootstrap';
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
@@ -237,7 +237,6 @@ export default function HomeComponent() {
       fetchData.then(() => {
         const currentUserId = localStorage.getItem('userId');
         const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
-        console.log(findKey);
         exitMessage(findKey.roomname, email, userName);
         updateUserRef.once('value', (snapshot) => {
           if (snapshot.exists()) {
