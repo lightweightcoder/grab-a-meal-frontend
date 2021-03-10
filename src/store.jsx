@@ -118,7 +118,9 @@ export function AppProvider({ children }) {
 // these functions must be passed the dispatch from the current context
 
 // export const BACKEND_URL = 'http://localhost:3004';
-export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+// export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+// export const BACKEND_URL = 'https://api.hangoutsonline.xyz';
+export const BACKEND_URL = 'https://backend.hangout.casa';
 
 export function retrieveActivities(dispatch) {
   return axios.get(`${BACKEND_URL}/activities`, { withCredentials: true }).then((result) => {

@@ -20,12 +20,6 @@ function App() {
       <AppProvider>
         <Router>
           <NavbarComponent />
-          {/* <Redirect
-            to={{
-              pathname: '/roomlist',
-              state: { from: location },
-            }}
-          /> */}
           <Switch>
             <Route path="/home" component={HomeComponent} />
             <Route path="/profile" component="" />
@@ -34,15 +28,6 @@ function App() {
             <Route path="/activities/new" component={CreateActivityComponent} />
             <Route path="/login" component={LoginComponent} />
             <Route path="/register" component={RegistrationComponent} />
-            {/* <SecureRoute path="/roomlist">
-              <RoomList />
-            </SecureRoute>
-            <SecureRoute path="/addroom">
-              <AddRoom />
-            </SecureRoute>
-            <SecureRoute path="/chatroom/:room">
-              <ChatRoom />
-            </SecureRoute> */}
           </Switch>
         </Router>
       </AppProvider>
