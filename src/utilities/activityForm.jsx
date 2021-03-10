@@ -1,12 +1,17 @@
+// this file contains constants and functions for create activity and edit activity forms
 import React from 'react';
 
 export const categoriesNames = ['Breakfast', 'Coffee', 'Lunch', 'Dinner', 'Supper', 'Budget', 'Fancy', 'Movie', 'Sports', 'Hike', 'Karaoke', 'Clubbing', 'Others'];
 
+// create jsx for category options
 export const categoryOptions = categoriesNames.map((name, index) => (
   <option key={name} value={index + 1}>{name}</option>
 ));
 
+// create jsx for options related to the number of participants
+// an activity can hav
 export const numOfParticipantsOptions = [];
+// number of participants will be between 2 to 10
 for (let i = 2; i < 11; i += 1) {
   numOfParticipantsOptions.push(<option key={i} value={i}>{i}</option>);
 }
