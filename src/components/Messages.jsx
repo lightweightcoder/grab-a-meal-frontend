@@ -10,7 +10,7 @@ import Alert from 'react-bootstrap/Alert';
 import { useCookies } from 'react-cookie';
 import ConversationList from './Messages/ConversationList.jsx';
 import MessageList from './Messages/MessageList.jsx';
-import './Messages/Message.css';
+import '../component-stylesheets/Message.css';
 import firebase from '../Firebase.js';
 
 export default function Messages() {
