@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
-import './Card.css';
+import '../component-stylesheets/Card.css';
 
 export default function CardComponent({
   date, location, onClick,

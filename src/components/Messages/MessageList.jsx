@@ -6,7 +6,7 @@ import {
 import MessageChat from './MessageChat.jsx';
 import firebase from '../../Firebase.js';
 
-import './Message.css';
+import '../../component-stylesheets/Message.css';
 
 export default function MessageList({
   roomName,

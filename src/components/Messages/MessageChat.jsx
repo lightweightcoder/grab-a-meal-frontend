@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import './Message.css';
+import '../../component-stylesheets/Message.css';
 
 export default function MessageChat(props) {
   const {

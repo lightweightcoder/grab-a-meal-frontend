@@ -6,7 +6,7 @@ import ConversationListItem from './ListConversationItem.jsx';
 // import ToolbarButton from '../ToolbarButton';
 // import ConversationSearch from '../ConversationSearch';
 
-import './Message.css';
+import '../../component-stylesheets/Message.css';
 
 axios.defaults.withCredentials = false;
 
