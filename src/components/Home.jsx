@@ -8,7 +8,7 @@ import {
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment';
 import CardComponent from './Card.jsx';
-import './Home.css';
+import '../component-stylesheets/Home.css';
 import {
   categoryOptions, numToTwoDecimalPlace, getPercentageDiscount, getDiscountedPrice,
 } from '../utilities/activityForm.jsx';

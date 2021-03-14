@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import shave from 'shave';
 
-import './Message.css';
+import '../../component-stylesheets/Message.css';
 
 export default function ConversationListItem({
   title, setRoomName, roomName,
