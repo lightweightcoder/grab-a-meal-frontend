@@ -7,12 +7,9 @@ export default function Footer() {
       <div>
         <img src="/logo.png" alt="" />
         created by:
-        {' '}
-        <a href="https://github.com/lightweightcoder">Alvin</a>
-        {' '}
+        <a href="https://github.com/lightweightcoder"> Alvin </a>
         and
-        {' '}
-        <a href="https://github.com/kenrickles">Kenrick</a>
+        <a href="https://github.com/kenrickles"> Kenrick</a>
       </div>
     </footer>
   );
