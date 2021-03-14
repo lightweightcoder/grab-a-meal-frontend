@@ -21,13 +21,13 @@ function App() {
         <Router>
           <NavbarComponent />
           <Switch>
-            <Route path="/home" component={HomeComponent} />
-            <Route path="/" component={LandingPageComponent} />
-            <Route path="/messages" component={Messages} />
-            <Route path="/logout" component="" />
-            <Route path="/activities/new" component={CreateActivityComponent} />
             <Route path="/login" component={LoginComponent} />
             <Route path="/register" component={RegistrationComponent} />
+            <Route path="/home" component={HomeComponent} />
+            <Route path="/messages" component={Messages} />
+            <Route path="/activities/new" component={CreateActivityComponent} />
+            <Route path="/logout" component="" />
+            <Route path="/" component={LandingPageComponent} />
           </Switch>
         </Router>
       </AppProvider>

@@ -82,9 +82,13 @@ export default function NavbarComponent() {
   return (
     <div className="navbar-container app-navbar">
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand>
-          <img src="./logo.png" alt="" width="100px" height="80px" />
-        </Navbar.Brand>
+        <LinkContainer to="/">
+          <Nav.Link>
+            <Navbar.Brand>
+              <img src="./logo.png" alt="" width="100px" height="80px" />
+            </Navbar.Brand>
+          </Nav.Link>
+        </LinkContainer>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
@@ -92,7 +96,7 @@ export default function NavbarComponent() {
               <Nav.Link>Login</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/register">
-              <Nav.Link className="float-right">Register</Nav.Link>
+              <Nav.Link>Register</Nav.Link>
             </LinkContainer>
           </Nav>
         </Navbar.Collapse>
