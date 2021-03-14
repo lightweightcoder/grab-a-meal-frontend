@@ -92,7 +92,7 @@ export default function NavbarComponent() {
               <Nav.Link>Login</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/register">
-              <Nav.Link>Register</Nav.Link>
+              <Nav.Link className="float-right">Register</Nav.Link>
             </LinkContainer>
           </Nav>
         </Navbar.Collapse>
