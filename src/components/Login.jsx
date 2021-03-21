@@ -1,4 +1,3 @@
-import '../component-stylesheets/Login.css';
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
@@ -6,6 +5,8 @@ import {
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+
+import '../component-stylesheets/Login.css';
 import { BACKEND_URL, AppContext, setLoggedInUserIdAction } from '../store.jsx';
 import firebase from '../Firebase.js';
 
