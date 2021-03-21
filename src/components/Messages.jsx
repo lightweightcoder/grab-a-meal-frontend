@@ -16,7 +16,7 @@ import firebase from '../Firebase.js';
 export default function Messages() {
   // set the current cookies (stored in the browser) in the cookies state
   const [cookies] = useCookies([]);
-  // const location = useLocation();
+
   const [conversationTitles, setConversationTitles] = useState([]);
   const [roomName, setRoomName] = useState('');
   // showLoading is necessary for the conversationTitle to load before getting the messages

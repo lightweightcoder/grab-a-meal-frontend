@@ -14,22 +14,19 @@ export default function Login() {
   const [cookies] = useCookies([]);
   // retrieve the store state variable and dispatch function from the App Context provider
   const { dispatch } = useContext(AppContext);
-  // create a hook to use when the logic says to change components
+  // useHistory to goBack to previous page when using react router
   const history = useHistory();
+
+  // declaring state variables
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [invalidMessage, setInvalidMessage] = useState('');
-
-  // Firebase stuff
-  const [creds, setCreds] = useState({ email: '', name: '', userId: '' });
-  // const [showLoading, setShowLoading] = useState(false);
 
   // if the user table exist in Firebase Database, it will just return, if not it will create.
   const ref = firebase.database().ref('users/');
 
   const handleLogin = () => {
-    console.log('handle login');
-
+    // post request to axios backend
     axios.post(`${BACKEND_URL}/login`, { email, password }, { withCredentials: true }).then((result) => {
       // if validation failed for login, display validation message
       if (result.data.invalidMessage) {
@@ -41,23 +38,30 @@ export default function Login() {
       if (result.data.userId) {
         // set the logged in user's id in the app provider
         dispatch(setLoggedInUserIdAction(result.data.userId));
-
-        // take the user to home route
-        // console.log(result.data.userName);
+        // using the result from Axios to set the local storage item
         const userIdData = result.data.userId;
         const userNameData = result.data.userName;
-        ref.orderByChild('email').equalTo(creds.email).once('value', (snapshot) => {
+        // Firebase query
+        ref.orderByChild('email').equalTo(email).once('value', (snapshot) => {
+          // if user is present, set localStorage to hold the values of email, name and userId
           if (snapshot.exists()) {
-            localStorage.setItem('email', creds.email);
+            localStorage.setItem('email', email);
             localStorage.setItem('name', userNameData);
             localStorage.setItem('userId', userIdData);
+            // take the user to home route
             history.push('/home');
           } else {
+            /* create a new using in the firebase database and set localStorage
+            to hold the values of email, name and userId */
+            // create a new user
             const newUser = firebase.database().ref('users/').push();
-            newUser.set({ name: userNameData, userid: userIdData, email: creds.email });
+            // set the new user Information to firebase
+            newUser.set({ name: userNameData, userid: userIdData, email });
             localStorage.setItem('name', userNameData);
             localStorage.setItem('userId', userIdData);
-            localStorage.setItem('email', creds.email);
+            localStorage.setItem('email', email);
+
+            // take the user to home route
             history.push('/home');
           }
         });
@@ -66,8 +70,6 @@ export default function Login() {
 
   const onEmailChange = (e) => {
     setEmail(e.target.value);
-    // e.persist(); we do not need this
-    setCreds({ ...creds, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {

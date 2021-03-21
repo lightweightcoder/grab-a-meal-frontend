@@ -30,8 +30,6 @@ export default function CreateActivityComponent() {
   const [newActivity, setNewActivity] = useState({
     name: '', description: '', dateTime: new Date(), totalNumOfParticipants: '2', location: '', categoryId: '1', usualPrice: '0.00', discountedPrice: '0.00', percentageDiscount: '0.00',
   });
-  // // state for firebase database creation
-  // const [newActivityRoom, setNewActivityroom] = useState({ activity: '' });
 
   // create a hook to use when the logic says to change components
   const history = useHistory();
