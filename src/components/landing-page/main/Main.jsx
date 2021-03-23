@@ -107,16 +107,6 @@ export default function Main() {
             </div>
           </div>
         </div>
-
-        <div id="portofolio" className="gallery">
-          <div className="gallery__item__one" />
-          <div className="gallery__item__two" />
-          <div className="gallery__item__three" />
-          <div className="gallery__item__four" />
-          <div className="gallery__item__five" />
-          <div className="gallery__item__six" />
-        </div>
-
         <section id="vision">
           <h2>Our Vision</h2>
           <div>
@@ -125,7 +115,14 @@ export default function Main() {
             </p>
           </div>
         </section>
-
+        <div id="portofolio" className="gallery">
+          <div className="gallery__item__one" />
+          <div className="gallery__item__two" />
+          <div className="gallery__item__three" />
+          <div className="gallery__item__four" />
+          <div className="gallery__item__five" />
+          <div className="gallery__item__six" />
+        </div>
       </main>
     </div>
   );
