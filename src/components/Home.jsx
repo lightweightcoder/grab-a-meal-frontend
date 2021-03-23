@@ -113,15 +113,20 @@ export default function HomeComponent() {
       }
 
       const fetchData = new Promise((resolve) => {
+        // find all rooms/activities in firebase
         firebase.database().ref('rooms/').on('value', (resp) => {
+          // find the room of the respective activity
           findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityId));
           resolve(1);
         });
       });
       fetchData.then(() => {
         const currentUserId = localStorage.getItem('userId');
+        // get the users of the activity/room
         const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
+        // add the welcome message to the messages object in firebase
         welcomeMessage(findKey.roomname, email, userName);
+        // add the user to the activity
         updateUserRef.once('value', (snapshot) => {
           if (snapshot.exists()) {
             const currentUsers = snapshot.val();
@@ -276,6 +281,7 @@ export default function HomeComponent() {
       fetchData.then(() => {
         console.log('inside fetchdata.then');
         const deleteUserRef = firebase.database().ref(`rooms/${findKey.key}`);
+        // delete the activity/room from firebase
         deleteUserRef.remove();
         // close the display of the modal that shows the activity details
         setdisplayCardDetails(false);
