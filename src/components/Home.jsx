@@ -51,6 +51,7 @@ export default function HomeComponent() {
   // create a hook to use when the logic says to change components
   const history = useHistory();
 
+  // add the key value of each child snapshot element to its .val() object
   const snapshotToArray = (snapshot) => {
     const returnArr = [];
 
@@ -63,12 +64,15 @@ export default function HomeComponent() {
     return returnArr;
   };
 
+  // retrieve activities from the database
   useEffect(() => {
     retrieveActivities(dispatch).then((result) => {
       if (result.error) {
         history.push('/login');
       }
     });
+
+    // set the email and name of the user in local storage
     setEmail(localStorage.getItem('email'));
     setUserName(localStorage.getItem('name'));
   }, []);
@@ -120,13 +124,14 @@ export default function HomeComponent() {
           resolve(1);
         });
       });
+
       fetchData.then(() => {
         const currentUserId = localStorage.getItem('userId');
-        // get the users of the activity/room
+        // get the users of the activity / room
         const updateUserRef = firebase.database().ref(`rooms/${findKey.key}/activityUsers/users`);
         // add the welcome message to the messages object in firebase
         welcomeMessage(findKey.roomname, email, userName);
-        // add the user to the activity
+        // add the user to the activity (i.e. room)
         updateUserRef.once('value', (snapshot) => {
           if (snapshot.exists()) {
             const currentUsers = snapshot.val();
@@ -271,13 +276,17 @@ export default function HomeComponent() {
         return;
       }
       let findKey;
+
       const fetchData = new Promise((resolve) => {
+        // get the rooms / activities from firebase
         firebase.database().ref('rooms/').on('value', (resp) => {
+          // find the room of the selected activity
           findKey = snapshotToArray(resp).find((element) => Number(element.activityId) === Number(activityDetails.id));
           console.log(findKey);
           resolve(1);
         });
       });
+
       fetchData.then(() => {
         console.log('inside fetchdata.then');
         const deleteUserRef = firebase.database().ref(`rooms/${findKey.key}`);
@@ -528,11 +537,7 @@ export default function HomeComponent() {
         <div className="d-flex justify-content-center row">
           <div className="col-md-8">
             <div className="d-flex flex-row justify-content-between align-items-center">
-              <div className="px-2">
-                {/* <h6 className="text-black-50 mt-2">Create a new Activity</h6> */}
-              </div>
-              {/* <div className="feed-icon px-2"><i className="fa fa-long-arrow-up text-black-50" /></div> */}
-              {/* <div className="container create-button-div"> */}
+              <div className="px-2" />
               <Link to="/activities/new" className="create-activity-button" role="button">Create New Activity</Link>
             </div>
             {activityDisplay()}
