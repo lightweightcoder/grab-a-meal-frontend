@@ -8,8 +8,6 @@ import reportWebVitals from './reportWebVitals.js';
 // import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.css';
 
-var test = "test"
-
 ReactDOM.render(
   <React.StrictMode>
     <CookiesProvider>
